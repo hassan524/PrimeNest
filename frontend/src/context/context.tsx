@@ -9,6 +9,8 @@ interface AppContextType {
   SetIsSignOpen: (value: boolean) => void;
   IsSideBarOpen: boolean;
   SetIsSidebarOpen: (value: boolean) => void;
+  IsPropertyOpen: boolean,
+  SetIsPropertyOpen: (value: boolean) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -18,6 +20,8 @@ export const AppContext = createContext<AppContextType>({
   SetIsSignOpen: () => {},
   IsSideBarOpen: false,
   SetIsSidebarOpen: () => {},
+  IsPropertyOpen: false,
+  SetIsPropertyOpen: () => {}
 });
 
 interface AppProviderProps {
@@ -28,12 +32,14 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   const [IsLoginOpen, SetIsLoginOpen] = useState(false);
   const [IsSignOpen, SetIsSignOpen] = useState(false);
   const [IsSideBarOpen, SetIsSidebarOpen] = useState(false);
+  const [IsPropertyOpen, SetIsPropertyOpen] = useState(false)
 
   return (
     <AppContext.Provider value={{ 
       IsLoginOpen, SetIsLoginOpen, 
       IsSignOpen, SetIsSignOpen, 
-      IsSideBarOpen, SetIsSidebarOpen 
+      IsSideBarOpen, SetIsSidebarOpen,
+      IsPropertyOpen, SetIsPropertyOpen
     }}>
       {children}
     </AppContext.Provider>
