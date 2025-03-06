@@ -31,11 +31,12 @@ const Navbar = () => {
         </div>
 
         {/* Navigation Links */}
-        <div className="lg:flex hidden gap-[2rem] opacity-[0.9] items-center text-lg">
+        <div className="lg:flex hidden gap-[3rem] opacity-[0.9] items-center text-lg">
           <Link href="/">Home</Link>
-          <Link href="/for-sale">For sale</Link>
-          <Link href="/to-rent">To rent</Link>
-          <Link href="/house-prices">House prices</Link>
+          <Link href="/dashboard">Dashboard</Link>
+          {/* <Link href="/for-sale">For sale</Link>
+          <Link href="/to-rent">To rent</Link> */}
+          <Link href="/house-prices">Properties</Link>
         </div>
 
         {/* Icons & Dropdown */}

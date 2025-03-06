@@ -13,25 +13,64 @@ import { Button } from "./ui/button";
 import { useAppContext } from "@/context/context";
 import { uploadImage } from "../../utils/claudinary";
 import { Skeleton } from "./ui/skeleton";
+import axios from 'axios'
+import { toast } from 'sonner'
+import { PropertySchema } from "../../utils/Schema";
+import { apiRoute } from "../../utils/apiRoutes";
+import { useSession } from "next-auth/react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const SellPropertyDialog = () => {
-  const [images, setImages] = useState<File[]>([]);
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState("");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [location, setLocation] = useState("");
   const { IsPropertyOpen, SetIsPropertyOpen } = useAppContext();
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { data: session } = useSession();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState<{
+    images: string[];
+    previewImages: string[];
+    tags: string[];
+    inputValue: string;
+    title: string;
+    description: string;
+    location: string;
+    bedrooms: number;
+    bathrooms: number;
+    price: number;
+    propertyType: string;
+  }>({
+    images: [],
+    previewImages: [],
+    tags: [],
+    inputValue: "",
+    title: "",
+    description: "",
+    location: "",
+    bedrooms: 0,
+    bathrooms: 0,
+    price: 0,
+    propertyType: "",
+  });
+  const handleImageUpload = async (e: any) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
+
     setLoading(true);
+
     try {
       const imageURL = await uploadImage(file);
-      if (imageURL) setPreviewImages((prev) => [...prev, imageURL]);
+
+      if (imageURL) {
+        setFormData((prev: any) => ({
+          ...prev,
+          previewImages: [...prev.previewImages, imageURL],
+          images: [...prev.images, imageURL],
+        }));
+      }
     } catch (error) {
       console.error("Error uploading image:", error);
     } finally {
@@ -40,69 +79,133 @@ const SellPropertyDialog = () => {
   };
 
   const removeImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index));
-    setPreviewImages(previewImages.filter((_, i) => i !== index));
+    setFormData((prev) => ({
+      ...prev,
+      previewImages: prev.previewImages.filter((_, i) => i !== index),
+    }));
   };
 
-  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && inputValue.trim()) {
+  const handleTagKeyDown = (e: any) => {
+    if (e.key === "Enter" && formData.inputValue.trim()) {
       e.preventDefault();
-      if (!tags.includes(inputValue.trim())) setTags([...tags, inputValue.trim()]);
-      setInputValue("");
+      if (!formData.tags.includes(formData.inputValue.trim())) {
+        setFormData((prev) => ({
+          ...prev,
+          tags: [...prev.tags, formData.inputValue.trim()],
+          inputValue: "",
+        }));
+      }
     }
   };
 
-  const removeTag = (tag: string) => setTags(tags.filter((t) => t !== tag));
+  const removeTag = (tag: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((t) => t !== tag),
+    }));
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    if (!title.trim() || !description.trim() || !location.trim()) return;
-    if (tags.length < 3) return alert("Minimum 3 tags are required!");
-    console.log("✅ Form submitted:", { tags, title, description, location });
+
+    const sanitizedFormData = {
+      ...formData,
+      price: Number(formData.price) || 0,
+      bedrooms: Number(formData.bedrooms) || 0,
+      bathrooms: Number(formData.bathrooms) || 0,
+    };
+
+    const result = PropertySchema.safeParse(sanitizedFormData);
+    if (!result.success) {
+      const firstError = result.error.issues[0]?.message;
+      toast.error(firstError);
+      return;
+    }
+
+    try {
+      await axios.post(apiRoute.AddProperty, formData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: session?.user?.token,
+        },
+      });
+
+      toast.success("Property Added Successfully");
+
+      setFormData({
+        images: [],
+        previewImages: [],
+        tags: [],
+        inputValue: "",
+        title: "",
+        description: "",
+        location: "",
+        bedrooms: 0,
+        bathrooms: 0,
+        price: 0,
+        propertyType: ""
+      });
+
+
+      SetIsPropertyOpen(false);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Something went wrong!");
+    }
   };
 
   return (
     <Dialog open={IsPropertyOpen} onOpenChange={SetIsPropertyOpen}>
       <DialogContent className="sm:max-w-4xl w-[90vw] max-h-[80vh] overflow-y-auto rounded-lg text-gray-900 flex flex-col gap-6">
-        <DialogHeader className="flex flex-col gap-1">
+        <DialogHeader>
           <DialogTitle className="text-2xl">Sell Your Property</DialogTitle>
           <DialogDescription>Fill out the details below to list your property.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <div className="flex justify-start gap-4 flex-wrap">
-            {previewImages.map((src, index) => (
-              <div key={index} className="relative sm:w-28 sm:h-20 h-16 w-24 bg-slate-500 overflow-hidden rounded">
+          <div className="flex gap-4 flex-wrap">
+            {formData.previewImages.map((src, index) => (
+              <div key={index} className="relative sm:w-28 sm:h-20 h-16 w-24 bg-slate-500 rounded overflow-hidden">
                 <img className="w-full h-full object-cover" src={src} alt={`Property ${index + 1}`} />
                 <i className="bi bi-x absolute top-1 right-1 cursor-pointer bg-white rounded-full p-1 text-sm" onClick={() => removeImage(index)}></i>
               </div>
             ))}
             {loading && <Skeleton className="sm:w-28 sm:h-20 h-16 w-24" />}
-            {previewImages.length < 5 && (
+            {formData.previewImages.length < 5 && (
               <label className="sm:w-28 sm:h-20 h-16 w-24 bg-slate-100 rounded-md flex items-center justify-center cursor-pointer">
                 <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                 <span className="text-gray-600 text-[1rem]">+</span>
               </label>
             )}
           </div>
-          <input type="text" placeholder="Enter your property title" className="mt-1 block w-full border rounded-md p-2" value={title} onChange={(e) => setTitle(e.target.value)} required />
-          <input type="text" placeholder="Enter your property location" className="mt-1 block w-full border rounded-md p-2" value={location} onChange={(e) => setLocation(e.target.value)} required />
+          <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, propertyType: value }))}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Whats Your Property Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="For Rent">For Rent</SelectItem>
+              <SelectItem value="For Sale">For Sale</SelectItem>
+            </SelectContent>
+          </Select>
+          <input type="text" name="title" placeholder="Property Title" className="border rounded-md p-2" value={formData.title} onChange={handleChange} required />
+          <input type="text" name="location" placeholder="Location" className="border rounded-md p-2" value={formData.location} onChange={handleChange} required />
           <div className="flex gap-4">
-            <input placeholder="Bedrooms" className="w-1/2 border rounded-md p-2" type="number" />
-            <input placeholder="Bathrooms" className="w-1/2 border rounded-md p-2" type="number" />
+            <input type="number" name="bedrooms" placeholder="Bedrooms" className="w-1/2 border rounded-md p-2" value={formData.bedrooms} onChange={handleChange} />
+            <input type="number" name="bathrooms" placeholder="Bathrooms" className="w-1/2 border rounded-md p-2" value={formData.bathrooms} onChange={handleChange} />
           </div>
           <div className="border rounded-md p-2 flex flex-wrap gap-3">
-            {tags.map((tag, index) => (
+            {formData.tags.map((tag, index) => (
               <span key={index} className="bg-gray-100 px-2 py-1 rounded flex items-center gap-1">
                 {tag} <i className="bi bi-x cursor-pointer" onClick={() => removeTag(tag)}></i>
               </span>
             ))}
-            <input type="text" className="outline-none flex-grow" placeholder="Enter your tags" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={handleTagKeyDown} required />
+            <input type="text" className="outline-none flex-grow" placeholder="Enter tags" name="inputValue" value={formData.inputValue} onChange={handleChange} onKeyDown={handleTagKeyDown} />
           </div>
-          <textarea rows={4} className="mt-1 block w-full border rounded-md p-2" placeholder="Describe your property..." value={description} onChange={(e) => setDescription(e.target.value)} required></textarea>
-          <div className="flex items-center border rounded-md p-2">
-            <i className="bi bi-currency-dollar"></i>
-            <input type="number" min={1000} placeholder="Enter your price" className="w-full outline-none" required />
-          </div>
+          <textarea name="description" rows={4} className="border rounded-md p-2" placeholder="Describe your property..." value={formData.description} onChange={handleChange} required></textarea>
+          <input type="number" name="price" min={1000} placeholder="Price" className="border rounded-md p-2" value={formData.price} onChange={handleChange} required />
           <div className="mt-6 flex justify-end space-x-4">
             <DialogClose asChild>
               <Button type="button">Cancel</Button>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext } from "@/context/context";
 import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 const Dropdown = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -53,9 +54,11 @@ const Dropdown = () => {
                         <div className="flex flex-col gap-2">
                             {session ? (
                                 <>
-                                    <Link href="/dashboard" className="text-gray-800 hover:text-blue-600 transition">Dashboard</Link>
-                                    <Link href="/profile" className="text-gray-800 hover:text-blue-600 transition">Profile</Link>
+                                    {/* <Link href="/dashboard" className="text-gray-800 hover:text-blue-600 transition">Dashboard</Link> */}
+                                    {/* <Link href="/profile" className="text-gray-800 hover:text-blue-600 transition">Profile</Link>  */}
+                                    <span className="text-gray-800 hover:text-blue-600 transition cursor-pointer" onClick={() => SetIsPropertyOpen(true)}>Profile</span>
                                     <span className="text-gray-800 hover:text-blue-600 transition cursor-pointer" onClick={() => SetIsPropertyOpen(true)}>Sell Property</span>
+                                    <span className="text-gray-800 hover:text-blue-600 transition cursor-pointer" onClick={() => signOut({ callbackUrl: "/" })}>Logout</span>
                                 </>
                             ) : (
                                 <>

@@ -43,6 +43,7 @@ const handler = NextAuth({
                 token.name = user.name;
                 token.email = user.email;
                 token.profilePic = user.profilePic || "/default-avatar.png";
+                token.token = user.token; // Store the token
             }
             return token;
         },
