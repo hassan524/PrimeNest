@@ -36,7 +36,7 @@ const Navbar = () => {
           <Link href="/dashboard">Dashboard</Link>
           {/* <Link href="/for-sale">For sale</Link>
           <Link href="/to-rent">To rent</Link> */}
-          <Link href="/house-prices">Properties</Link>
+          <Link href="/properties">Properties</Link>
         </div>
 
         {/* Icons & Dropdown */}

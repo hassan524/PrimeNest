@@ -1,7 +1,7 @@
 'use client'
 import { createContext, useState, ReactNode, useContext } from "react";
 
-// Define the context type properly
+// Define the context type
 interface AppContextType {
   IsLoginOpen: boolean;
   SetIsLoginOpen: (value: boolean) => void;
@@ -9,19 +9,27 @@ interface AppContextType {
   SetIsSignOpen: (value: boolean) => void;
   IsSideBarOpen: boolean;
   SetIsSidebarOpen: (value: boolean) => void;
-  IsPropertyOpen: boolean,
+  IsPropertyOpen: boolean;
   SetIsPropertyOpen: (value: boolean) => void;
+  Properties: any[];
+  SetProperties: (value: any[]) => void;
+  OriginolProperties: any[],
+  SetOriginolProperties: (value: any[]) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
   IsLoginOpen: false,
-  SetIsLoginOpen: () => {},
+  SetIsLoginOpen: () => { },
   IsSignOpen: false,
-  SetIsSignOpen: () => {},
+  SetIsSignOpen: () => { },
   IsSideBarOpen: false,
-  SetIsSidebarOpen: () => {},
+  SetIsSidebarOpen: () => { },
   IsPropertyOpen: false,
-  SetIsPropertyOpen: () => {}
+  SetIsPropertyOpen: () => { },
+  Properties: [],
+  SetProperties: () => { },
+  OriginolProperties: [],
+  SetOriginolProperties: () => { }
 });
 
 interface AppProviderProps {
@@ -32,14 +40,18 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   const [IsLoginOpen, SetIsLoginOpen] = useState(false);
   const [IsSignOpen, SetIsSignOpen] = useState(false);
   const [IsSideBarOpen, SetIsSidebarOpen] = useState(false);
-  const [IsPropertyOpen, SetIsPropertyOpen] = useState(false)
+  const [IsPropertyOpen, SetIsPropertyOpen] = useState(false);
+
+  const [Properties, SetProperties] = useState<any>(null);
+  const [OriginolProperties, SetOriginolProperties] = useState<any>(null);
 
   return (
-    <AppContext.Provider value={{ 
-      IsLoginOpen, SetIsLoginOpen, 
-      IsSignOpen, SetIsSignOpen, 
+    <AppContext.Provider value={{
+      IsLoginOpen, SetIsLoginOpen,
+      IsSignOpen, SetIsSignOpen,
       IsSideBarOpen, SetIsSidebarOpen,
-      IsPropertyOpen, SetIsPropertyOpen
+      IsPropertyOpen, SetIsPropertyOpen,
+      Properties, SetProperties, OriginolProperties, SetOriginolProperties
     }}>
       {children}
     </AppContext.Provider>

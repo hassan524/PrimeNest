@@ -1,0 +1,161 @@
+'use client'
+
+import React, { useState } from 'react'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import "swiper/css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { useAppContext } from '@/context/context';
+
+const FilterSection = () => {
+  const { Properties, SetProperties, OriginolProperties } = useAppContext();
+
+  const [filters, setFilters] = useState({
+    bedrooms: '',
+    bathrooms: '',
+    minPrice: '',
+    maxPrice: '',
+  });
+
+  const handleFilterChange = (key: any, value: any) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSearch = () => {
+    const filteredProperties = OriginolProperties.filter(prop => {
+      return (
+        (filters.bedrooms ? prop.bedrooms == filters.bedrooms : true) &&
+        (filters.bathrooms ? prop.bathrooms == filters.bathrooms : true) &&
+        (filters.minPrice ? prop.price >= filters.minPrice : true) &&
+        (filters.maxPrice ? prop.price <= filters.maxPrice : true)
+      );
+    });
+
+    SetProperties(filteredProperties);
+  };
+
+  return (
+    <div className="rounded-xl flex flex-col gap-6">
+      <div className="flex justify-start gap-3">
+        <span className="py-2 px-6 rounded-2xl bg-slate-100 cursor-pointer">Sale</span>
+        <span className="py-2 px-6 rounded-2xl bg-slate-100 cursor-pointer">Rent</span>
+      </div>
+
+      <div className="md:hidden flex flex-col gap-4">
+        <Swiper spaceBetween={4} slidesPerView={2.5} className="w-full pb-4">
+          <SwiperSlide>
+            <Select onValueChange={(value) => handleFilterChange('bedrooms', value)}>
+              <SelectTrigger className="w-full rounded-2xl bg-transparent">
+                <SelectValue placeholder="Bedrooms" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="3">3</SelectItem>
+                <SelectItem value="4">4+</SelectItem>
+              </SelectContent>
+            </Select>
+          </SwiperSlide>
+
+          <SwiperSlide>
+            <Select onValueChange={(value) => handleFilterChange('bathrooms', value)}>
+              <SelectTrigger className="w-full rounded-2xl bg-transparent">
+                <SelectValue placeholder="Bathrooms" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="3">3</SelectItem>
+                <SelectItem value="4">4+</SelectItem>
+              </SelectContent>
+            </Select>
+          </SwiperSlide>
+
+          <SwiperSlide>
+            <Input
+              type="number"
+              placeholder="Min Price"
+              className="w-full rounded-2xl border px-3 py-2"
+              onChange={(e) => handleFilterChange('minPrice', e.target.value)}
+            />
+          </SwiperSlide>
+
+          <SwiperSlide>
+            <Input
+              type="number"
+              placeholder="Max Price"
+              className="w-full rounded-2xl border px-3 py-2"
+              onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
+            />
+          </SwiperSlide>
+        </Swiper>
+      </div>
+
+      <Button
+        className="bg-gray-900 md:hidden flex w-40 text-white px-6 py-3 rounded-2xl hover:bg-gray-800 transition-all"
+        onClick={handleSearch}
+      >
+        Search
+      </Button>
+
+      {/* Desktop View */}
+      <div className="hidden md:flex md:flex-wrap gap-4">
+        <div className="flex flex-col gap-2">
+          <Select onValueChange={(value) => handleFilterChange('bedrooms', value)}>
+            <SelectTrigger className="w-48 rounded-2xl bg-transparent">
+              <SelectValue placeholder="Bedrooms" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1">1</SelectItem>
+              <SelectItem value="2">2</SelectItem>
+              <SelectItem value="3">3</SelectItem>
+              <SelectItem value="4">4+</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Select onValueChange={(value) => handleFilterChange('bathrooms', value)}>
+            <SelectTrigger className="w-48 rounded-2xl bg-transparent">
+              <SelectValue placeholder="Bathrooms" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1">1</SelectItem>
+              <SelectItem value="2">2</SelectItem>
+              <SelectItem value="3">3</SelectItem>
+              <SelectItem value="4">4+</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Input
+            type="number"
+            placeholder="Min Price"
+            className="w-48 rounded-2xl border px-3 py-2"
+            onChange={(e) => handleFilterChange('minPrice', e.target.value)}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Input
+            type="number"
+            placeholder="Max Price"
+            className="w-48 rounded-2xl border px-3 py-2"
+            onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
+          />
+        </div>
+
+        <Button
+          className="bg-gray-900 text-white px-6 py-3 rounded-2xl hover:bg-gray-800 transition-all"
+          onClick={handleSearch}
+        >
+          Search
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+export default FilterSection;

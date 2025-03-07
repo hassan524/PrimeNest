@@ -25,9 +25,9 @@ const handler = NextAuth({
                     const user = res.data;
 
                     if (user) {
-                        return user; 
+                        return user;
                     } else {
-                        return null; 
+                        return null;
                     }
                 } catch (error) {
                     console.error("Login Error:", error);
@@ -56,7 +56,11 @@ const handler = NextAuth({
             return session;
         },
     },
-    secret: process.env.NEXTAUTH_SECRET,
+    session: {
+        strategy: "jwt", 
+        maxAge: 30 * 24 * 60 * 60, 
+    },
+    secret: process.env.NEXTAUTH_SECRET, 
 });
 
 export { handler as GET, handler as POST };

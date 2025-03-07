@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import Property from '../models/Propertys.model';
+import User from '../models/User.model';
+import mongoose from 'mongoose';
 
 interface AuthRequest extends Request {
-    user?: { id: string }; 
+    user?: { id: string };
 }
 
 
@@ -42,3 +44,42 @@ export const HandleGetPropertys = async (req: Request, res: Response) => {
         res.status(500).json({ success: false, message: "Server Error" });
     }
 }
+
+export const HandleAddToFav = async (req: AuthRequest, res: Response) => {
+    try {
+        if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+
+        const { id } = req.body;
+        const userId = req.user.id;
+
+        if (!id) return res.status(400).json({ message: "Property ID is required" });
+
+        const user = await User.findById(userId);
+        const property = await Property.findById(id);
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+        if (!property) return res.status(404).json({ message: "Property not found" });
+
+        const index = user.favorites.findIndex((fav) => fav === id);
+        index > -1 ? user.favorites.splice(index, 1) : user.favorites.push(id);
+
+        await user.save();
+
+        res.status(200).json({
+            message: 'Success',
+            favorites: user.favorites,
+        });
+    } catch (error) {
+        console.error("Error in HandleAddToFav:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+export const HandleGetFav = async (req: AuthRequest, res: Response) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({ message: "Success", favorites: user.favorites });
+};
