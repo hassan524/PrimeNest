@@ -12,7 +12,6 @@ const secret = process.env.JWT_SECRET as string;
 
 const authorize = (req: AuthRequest, res: Response, next: NextFunction) => {
     const token = req.headers.authorization
-    console.log('got the token', token)
 
     if (!token) {
         return res.status(401).json({ message: "Access denied. No token provided." });
@@ -20,7 +19,6 @@ const authorize = (req: AuthRequest, res: Response, next: NextFunction) => {
 
     try {
         const decoded = jwt.verify(token, secret);
-    console.log('decoded', decoded)
 
         req.user = decoded; 
         next(); 

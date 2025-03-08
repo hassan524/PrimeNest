@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import DashboardCards from "@/components/ui/dashboardCard";
 import { ListingsTrendChart } from "@/components/ui/ListingChart";
-import Favourate from "@/components/Favourate";
+import UserItems from "@/components/UserItems";
 import { useAppContext } from "@/context/context";
 
 const Page = () => {
@@ -13,7 +13,7 @@ const Page = () => {
 
   return (
 
-    <main className="bg-slate-50 min-h-screen w-full lg:px-20 px-3 text-gray-900 flex flex-col gap-[2rem]">
+    <main className="bg-slate-50 min-h-screen w-full lg:px-16 px-3 text-gray-900 flex flex-col gap-[2rem]">
 
       <div className="flex items-center justify-between pt-[2rem]">
 
@@ -30,7 +30,7 @@ const Page = () => {
 
       <ListingsTrendChart />
 
-      <Favourate />
+      <UserItems />
 
     </main>
 

@@ -4,5 +4,6 @@ export const apiRoute = {
     AddProperty: `${process.env.NEXT_PUBLIC_BACKEND_URL}/prop/addProp`,
     GetProperty: `${process.env.NEXT_PUBLIC_BACKEND_URL}/prop/getProp`,
     AddToFav: `${process.env.NEXT_PUBLIC_BACKEND_URL}/prop/FavProp`,
-    GetProps: `${process.env.NEXT_PUBLIC_BACKEND_URL}/prop/GetProp`,
+    GetProps: `${process.env.NEXT_PUBLIC_BACKEND_URL}/prop/GetProps`,
+    GetUserProps: `${process.env.NEXT_PUBLIC_BACKEND_URL}/prop/GetUserProps`,
 };

@@ -76,10 +76,31 @@ export const HandleAddToFav = async (req: AuthRequest, res: Response) => {
 };
 
 export const HandleGetFav = async (req: AuthRequest, res: Response) => {
-    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+        if (!req.user) return res.status(401).json({ message: "Unauthorized" });
 
-    const user = await User.findById(req.user.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-    res.json({ message: "Success", favorites: user.favorites });
+        const favoriteProperties = await Property.find({ _id: { $in: user.favorites } });
+
+        return res.json({ message: "Success", favorites: favoriteProperties });
+    } catch (error) {
+        console.error("Error fetching favorite properties:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const getUserProperties = async (req: AuthRequest, res: Response) => {
+    try {
+        if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+
+        const userId = req.user.id; // Get user ID from middleware
+        const properties = await Property.find({ userId });
+
+        res.json({ message: "Success", properties });
+    } catch (error) {
+        console.error("Error fetching properties:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 };
