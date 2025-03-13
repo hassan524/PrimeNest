@@ -69,7 +69,6 @@ export const HandleAddToFav = async (req: AuthRequest, res: Response) => {
             user.favorites = user.favorites.filter((fav) => fav.toString() !== id);
             message = "Removed from favorites successfully";
         } else {
-            // Add if not exists
             user.favorites.push(id);
             message = "Added to favorites successfully";
         }
@@ -120,7 +119,7 @@ export const getUserProperties = async (req: AuthRequest, res: Response) => {
 
 export const GetUserUniqueProp = async (req: Request, res: Response) => {
     try {
-        console.log("🚀 Request received at /Uniqueprop with body:", req.body);
+        console.log("Request received at /Uniqueprop with body:", req.body);
 
         const { propertyID, userID } = req.body;
 
@@ -134,7 +133,7 @@ export const GetUserUniqueProp = async (req: Request, res: Response) => {
         const property = await Property.findById(propertyID);
 
         if (!property) {
-            console.log("❌ Property not found in database for ID:", propertyID);
+            console.log(" Property not found in database for ID:", propertyID);
             return res.status(404).json({ message: "Property not found" });
         }
 
