@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import Dropdown from "./ui/dropdown";
@@ -13,8 +13,20 @@ const Navbar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { SetIsSidebarOpen, SetIsSignOpen, SetIsLoginOpen } = useContext(AppContext);
+  
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
-  // Hide Navbar for /message routes
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 640); 
+    };
+
+    handleResize(); // Initialize
+    window.addEventListener("resize", handleResize);
+    
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   if (pathname.startsWith("/message")) {
     return null;
   }
@@ -22,7 +34,6 @@ const Navbar = () => {
   return (
     <header className="h-[11vh] lg:px-20 px-3 flex items-center bg-white relative z-50">
       <nav className="flex items-center justify-between w-full">
-        {/* Logo */}
         <div className="Logo flex items-center cursor-pointer">
           <div className="w-9 h-9">
             <img src="/logo.png" alt="PrimeNest Logo" />
@@ -30,16 +41,12 @@ const Navbar = () => {
           <span className="text-lg font-semibold">PrimeNest</span>
         </div>
 
-        {/* Navigation Links */}
         <div className="lg:flex hidden gap-[3rem] opacity-[0.9] items-center text-lg">
           <Link href="/">Home</Link>
           <Link href="/dashboard">Dashboard</Link>
-          {/* <Link href="/for-sale">For sale</Link>
-          <Link href="/to-rent">To rent</Link> */}
           <Link href="/properties">Properties</Link>
         </div>
 
-        {/* Icons & Dropdown */}
         <div className="flex items-center justify-end sm:gap-[1.8rem] gap-[1.3rem]">
           {session ? (
             <>

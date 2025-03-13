@@ -4,11 +4,20 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { useRef } from "react";
 import { Navigation } from "swiper/modules";
-import { Swiper as SwiperType } from "swiper"; // Import SwiperType
-import { ChevronLeft, ChevronRight } from "lucide-react"; // Icons
+import { Swiper as SwiperType } from "swiper"; 
+import { ChevronLeft, ChevronRight } from "lucide-react"; 
+import { useAppContext } from '@/context/context';
+import { Span } from "next/dist/trace";
 
 const SwiperCarousel = () => {
-    const swiperRef = useRef<SwiperType | null>(null); // Correct type
+    const swiperRef = useRef<SwiperType | null>(null);
+    const { Properties } = useAppContext();
+    
+    const propertiesArray = Array.isArray(Properties) ? Properties : [];
+    const displayedProperties = [...propertiesArray.slice(0, 5)];
+    while (displayedProperties.length < 5) {
+        displayedProperties.push(null); 
+    }
 
     return (
         <div className="w-full flex flex-col gap-[2rem] justify-center md:ps-[5rem] px-[1rem]">
@@ -20,7 +29,7 @@ const SwiperCarousel = () => {
 
             <Swiper
                 modules={[Navigation]}
-                onSwiper={(swiper) => (swiperRef.current = swiper)} // Now correctly typed
+                onSwiper={(swiper) => (swiperRef.current = swiper)}
                 centeredSlides={true}
                 breakpoints={{
                     320: { slidesPerView: 1, spaceBetween: 10, centeredSlides: true },
@@ -32,16 +41,18 @@ const SwiperCarousel = () => {
                 }}
                 className="w-full"
             >
-                {[1, 2, 3, 4, 5].map((num) => (
-                    <SwiperSlide key={num} className="flex justify-center">
-                        <div className="bg-gray-200 custom-sm:w-80 w-full h-64 flex items-center justify-center rounded-lg shadow-xl mx-auto">
-                            Slide {num}
+                {displayedProperties.map((property, index) => (
+                    <SwiperSlide key={index} className="flex justify-center">
+                        <div className={`custom-sm:w-80 w-full h-64 flex items-center justify-center rounded-lg shadow-xl mx-auto 
+                            ${property ? "bg-gray-200" : "bg-slate-200"}`}>
+                            {property && property.images?.length > 0 ? (
+                                <img src={property.images[0]} alt="Property" className="w-full h-full object-cover rounded-lg" />
+                            ) : <span className="text-gray-600 text-xl">{index}</span>}
                         </div>
                     </SwiperSlide>
                 ))}
             </Swiper>
 
-            {/* Custom Navigation Buttons BELOW Swiper */}
             <div className="flex sm:justify-end justify-center gap-4">
                 <button 
                     onClick={() => swiperRef.current?.slidePrev()} 

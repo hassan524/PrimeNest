@@ -7,16 +7,20 @@ import { apiRoute } from "../../utils/apiRoutes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "./ui/button";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Heart } from "lucide-react";
+import { toast } from "sonner"; 
 
 const PropertyList = () => {
     const { Properties, SetProperties, SetOriginolProperties } = useAppContext();
     const [loading, setLoading] = useState(true);
+    const [favorites, setFavorites] = useState<string[]>([]);
     const { data: session } = useSession();
+    const router = useRouter();
 
     useEffect(() => {
-        axios
-            .get(apiRoute.GetProperty)
-            .then((res) => {
+        axios.get(apiRoute.GetProperty)
+            .then(res => {
                 SetProperties(res.data.properties);
                 SetOriginolProperties(res.data.properties);
                 setLoading(false);
@@ -24,8 +28,36 @@ const PropertyList = () => {
             .catch(() => setLoading(false));
     }, []);
 
+    useEffect(() => {
+        if (session?.user?.token) {
+            axios.get(apiRoute.GetProps, {
+                headers: {
+                    Authorization: session?.user?.token,
+                }
+            }).then(res => {
+                const favIds = res.data.favorites.map((fav: any) => fav._id.toString());
+                setFavorites(favIds);
+            }).catch(err => console.error("Error fetching favorites", err));
+        }
+    }, [session]);
+
+    const handleFavorite = async (id: string) => {
+        try {
+            const res = await axios.post(apiRoute.AddToFav, { id }, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: session?.user?.token,
+                },
+            });
+                setFavorites(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
+                toast.success(res.data.message);
+        } catch (error) {
+            console.error("Error updating favorites", error);
+            toast.error("Something went wrong");
+        }
+    };
     return (
-        <div className="flex flex-col gap-[4rem] px-4 lg:px-0 mt-[2rem]">
+        <div className="flex flex-col gap-[4rem] lg:px-0 mt-[2rem]">
             {loading
                 ? [...Array(4)].map((_, index) => (
                     <div key={index} className="w-full h-[400px] flex flex-col lg:flex-row items-center gap-6 border rounded-md shadow-md p-6">
@@ -38,38 +70,37 @@ const PropertyList = () => {
                     </div>
                 ))
                 : Properties?.map((property) => (
-                    <div 
-                        key={property._id} 
-                        className="w-full relative flex flex-col lg:flex-row rounded-lg overflow-hidden gap-4"
-                    >
+                    <div key={property._id} className="w-full relative flex flex-col lg:flex-row rounded-lg sm:shadow-sm py-2 overflow-hidden gap-4">
                         <div className="flex flex-col sm:flex-row sm:gap-9 gap-4 w-full">
-                            {/* Image */}
-                            <div className="sm:w-80 w-full h-48">
-                                <img
-                                    src={property.images[0]}
-                                    alt={property.title}
-                                    className="w-full h-full object-cover rounded-md"
-                                />
+
+                            <div className="sm:w-80 relative w-full h-48">
+                                <img src={property.images[0]} alt={property.title} className="w-full h-full object-cover rounded-md" />
+
+                                {/* ✅ Heart button inside the image container */}
+                                <button
+                                    className="absolute top-2 left-2 p-2 rounded-full transition"
+                                    onClick={() => handleFavorite(property._id)}
+                                >
+                                   <Heart
+    className={favorites.includes(property._id.toString()) ? "text-red-500 fill-red-500" : "text-white"}
+    size={24}
+/>
+
+                                </button>
                             </div>
-                            
-                            {/* Details Section */}
-                            <div className="w-full flex flex-col">
-                                <div className="flex justify-between gap-2">
-                                <p className="sm:text-2xl text-xl font-semibold capitalize tracking-wider text-gray-700">
-                                    {property.title}
-                                </p>
-                                <h2 className="sm:text-3xl sm:hidden block text-2xl font-bold text-gray-800">
-                                    ${property.price.toLocaleString()}
-                                </h2>
+
+                            <div className="w-full flex flex-col gap-6">
+                                <div className="flex justify-between items-start gap-3">
+                                    <div className="flex flex-col">
+                                        <p className="sm:text-2xl text-xl font-semibold capitalize tracking-wider text-black">{property.title}</p>
+                                        <p className="text-gray-400 capitalize text-sm mt-2">{property.location}</p>
+                                    </div>
+                                    <h2 className="sm:text-3xl sm:hidden block text-2xl text-gray-800">${property.price.toLocaleString()}</h2>
                                 </div>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <i className="bi bi-geo-alt"></i>
-                                    <p className="text-gray-500">{property.location}</p>
-                                </div>
-                                <p className="mt-3 capitalize text-gray-500 tracking-wider break-words text-wrap">
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae magni modi ex totam alias sapiente inventore. Nihil est culpa pariatur.
+                                <p className="capitalize sm:leading-loose leading-relaxed text-gray-500 tracking-wider break-words text-wrap">
+                                    {property.description.length > 100 ? `${property.description.slice(0, 100)}...` : property.description}
                                 </p>
-                                <div className="flex gap-4 text-sm text-gray-600 mt-4">
+                                <div className="flex gap-4 text-sm text-gray-600">
                                     <span className="flex items-center border px-4 py-1 gap-2">
                                         <i className="bi bi-house-door"></i> {property.bedrooms} Beds
                                     </span>
@@ -77,14 +108,10 @@ const PropertyList = () => {
                                         <i className="fas fa-bath"></i> {property.bathrooms} Baths
                                     </span>
                                 </div>
-                                <Button className="mt-4 w-28 text-white py-2 rounded-md">View Details</Button>
+                                <Button className="w-28 text-white py-2 rounded-md" onClick={() => router.push(`/property/${property._id}`)}>View Details</Button>
                             </div>
-
-                            {/* Price Section */}
                             <div className="lg:absolute sm:block hidden lg:right-6 lg:top-6 sm:mt-0 mt-4 text-right">
-                                <h2 className="sm:text-3xl text-2xl font-bold text-gray-800">
-                                    ${property.price.toLocaleString()}
-                                </h2>
+                                <h2 className="sm:text-[2.5rem] text-2xl text-gray-800">${property.price.toLocaleString()}</h2>
                             </div>
                         </div>
                     </div>

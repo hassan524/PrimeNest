@@ -2,14 +2,26 @@
 
 import React from "react";
 import DashboardStatCard from "./DashboardStatCard";
+import { useAppContext } from "@/context/context";
 
 const DashboardCards = () => {
-  // Change these values as needed
+  const { Properties, Users } = useAppContext();
+  console.log(Properties, Users)
+  
+  const totalProperties = Properties?.length || 0;
+  const forSale = Properties?.filter(p => p.propertyType === "For Sale").length || 0;
+  const forRent = Properties?.filter(p => p.propertyType === "For Rent").length || 0;
+  const totalUsers = Users?.length || 0;
+  const totalCities = 14; 
+
+  const maxUsers = 100;
+  const userPercentage = Math.min((totalUsers / maxUsers) * 100, 100);
+
   const stats = [
-    { label: "For Sale", value: 24, percentage: 24, color: "#4CAF50" },
-    { label: "For Rent", value: 18, percentage: 18, color: "#FF9800" },
-    { label: "Total Customers", value: 150, percentage: 75, color: "#2196F3" },
-    { label: "Total Cities", value: 10, percentage: 10, color: "#9C27B0" },
+    { label: "For Sale", value: forSale, percentage: totalProperties ? (forSale / totalProperties) * 100 : 0, color: "#4CAF50" },
+    { label: "For Rent", value: forRent, percentage: totalProperties ? (forRent / totalProperties) * 100 : 0, color: "#FF9800" },
+    { label: "Total Customers", value: totalUsers, percentage: userPercentage, color: "#2196F3" },
+    { label: "Total Cities", value: totalCities, percentage: (totalCities / 50) * 100, color: "#9C27B0" }, 
   ];
 
   return (

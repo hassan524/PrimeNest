@@ -44,26 +44,24 @@ const Sidebar = () => {
                 {/* Sidebar Links */}
                 <nav className="flex flex-col gap-[2rem] px-5 mt-8">
                     <Link href="/" className="flex items-center gap-4 text-lg text-gray-700 hover:text-blue-600">
-                        <i className="bi bi-house-door-fill text-xl opacity-[0.2]"></i> Home
+                        <i className="bi bi-house-door-fill text-xl opacity-[0.7]"></i> Home
                     </Link>
-                    <Link href="/for-sale" className="flex items-center gap-4 text-lg text-gray-700 hover:text-blue-600">
-                        <i className="bi bi-cart-fill text-xl opacity-[0.2]"></i> For Sale
-                    </Link>
-                    <Link href="/to-rent" className="flex items-center gap-4 text-lg text-gray-700 hover:text-blue-600">
-                        <i className="bi bi-key-fill text-xl opacity-[0.2]"></i> To Rent
-                    </Link>
-                    <Link href="/house-prices" className="flex items-center gap-4 text-lg text-gray-700 hover:text-blue-600">
-                        <i className="bi bi-bar-chart-fill text-xl opacity-[0.2]"></i> House Prices
+                    <Link href="/properties" className="flex items-center gap-4 text-lg text-gray-700 hover:text-blue-600">
+                        <i className="bi bi-building text-xl opacity-[0.7]"></i> Properties
                     </Link>
                     <Link href="/dashboard" className="flex items-center gap-4 text-lg text-gray-700 hover:text-blue-600">
-                        <i className="bi bi-speedometer2 text-xl opacity-[0.2]"></i> Dashboard
+                        <i className="bi bi-list-task text-xl opacity-[0.7]"></i> Dashboard
+                    </Link>
+                    <Link href="/messages" className="flex items-center gap-4 text-lg text-gray-700 hover:text-blue-600">
+                        <i className="bi bi-chat-dots-fill text-xl opacity-[0.7]"></i> Messages
                     </Link>
                 </nav>
+
 
                 {/* Logout Button */}
                 <div className="px-5 mt-auto mb-5">
                     <button
-                            className="w-full bg-slate-50 py-3 rounded-lg flex items-center justify-center gap-2"
+                        className="w-full bg-slate-50 py-3 rounded-lg flex items-center justify-center gap-2"
                         onClick={() => console.log("Logout Clicked")}
                     >
                         <i className="bi bi-box-arrow-right text-lg"></i> Logout

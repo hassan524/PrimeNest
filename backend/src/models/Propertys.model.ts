@@ -5,7 +5,7 @@ export interface IProperty extends Document {
     description: string;
     price: number;
     location: string;
-
+    tags: string[];
     images: string[];
     bedrooms?: number;
     bathrooms?: number;
@@ -20,6 +20,7 @@ const PropertySchema = new Schema<IProperty>(
         price: { type: Number, required: true },
         location: { type: String, required: true },
         images: { type: [String], required: true }, 
+        tags: { type: [String], required: true }, 
         bedrooms: { type: Number, default: 0 },
         bathrooms: { type: Number, default: 0 },
         userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, 

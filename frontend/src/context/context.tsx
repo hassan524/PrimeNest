@@ -15,6 +15,8 @@ interface AppContextType {
   SetProperties: (value: any[]) => void;
   OriginolProperties: any[],
   SetOriginolProperties: (value: any[]) => void;
+  Users: any[];
+  SetUsers: (value: any[]) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -29,7 +31,9 @@ export const AppContext = createContext<AppContextType>({
   Properties: [],
   SetProperties: () => { },
   OriginolProperties: [],
-  SetOriginolProperties: () => { }
+  SetOriginolProperties: () => { },
+  Users: [],
+  SetUsers: () => { }
 });
 
 interface AppProviderProps {
@@ -44,6 +48,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 
   const [Properties, SetProperties] = useState<any>(null);
   const [OriginolProperties, SetOriginolProperties] = useState<any>(null);
+  const [Users, SetUsers] = useState<any>()
 
   return (
     <AppContext.Provider value={{
@@ -51,7 +56,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       IsSignOpen, SetIsSignOpen,
       IsSideBarOpen, SetIsSidebarOpen,
       IsPropertyOpen, SetIsPropertyOpen,
-      Properties, SetProperties, OriginolProperties, SetOriginolProperties
+      Properties, SetProperties, OriginolProperties, SetOriginolProperties,
+      Users, SetUsers
     }}>
       {children}
     </AppContext.Provider>

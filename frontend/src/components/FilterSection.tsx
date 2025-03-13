@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { useAppContext } from '@/context/context';
 
 const FilterSection = () => {
   const { Properties, SetProperties, OriginolProperties } = useAppContext();
+  const router = useRouter();
 
   const [filters, setFilters] = useState({
     bedrooms: '',
@@ -18,7 +20,7 @@ const FilterSection = () => {
     maxPrice: '',
   });
 
-  const handleFilterChange = (key: any, value: any) => {
+  const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -38,8 +40,18 @@ const FilterSection = () => {
   return (
     <div className="rounded-xl flex flex-col gap-6">
       <div className="flex justify-start gap-3">
-        <span className="py-2 px-6 rounded-2xl bg-slate-100 cursor-pointer">Sale</span>
-        <span className="py-2 px-6 rounded-2xl bg-slate-100 cursor-pointer">Rent</span>
+        <span
+          className="py-2 px-6 rounded-2xl bg-slate-100 cursor-pointer"
+          onClick={() => router.push('/properties/ForSale')}
+        >
+          Sale
+        </span>
+        <span
+          className="py-2 px-6 rounded-2xl bg-slate-100 cursor-pointer"
+          onClick={() => router.push('/properties/ForRent')}
+        >
+          Rent
+        </span>
       </div>
 
       <div className="md:hidden flex flex-col gap-4">

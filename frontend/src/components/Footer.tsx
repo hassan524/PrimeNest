@@ -19,7 +19,7 @@ const Footer = () => {
                 {/* For Sale Section */}
                 <div className="flex flex-col gap-4">
                     <h1 className="font-semibold text-lg">For Sale</h1>
-                    <ul className='flex flex-col text-md gap-2'>
+                    <ul className='flex flex-col text-xl gap-4'>
                         <li><a href="#" className="hover:underline">Homes</a></li>
                         <li><a href="#" className="hover:underline">Properties</a></li>
                         <li><a href="#" className="hover:underline">Land</a></li>
@@ -30,7 +30,7 @@ const Footer = () => {
                 {/* For Rent Section */}
                 <div className="flex flex-col gap-4">
                     <h1 className="font-semibold text-lg">For Rent</h1>
-                    <ul className='flex flex-col text-md gap-2'>
+                    <ul className='flex flex-col text-xl gap-4'>
                         <li><a href="#" className="hover:underline">Apartments</a></li>
                         <li><a href="#" className="hover:underline">Houses</a></li>
                         <li><a href="#" className="hover:underline">Office Spaces</a></li>
@@ -41,7 +41,7 @@ const Footer = () => {
                 {/* Resources Section */}
                 <div className="flex flex-col gap-4">
                     <h1 className="font-semibold text-lg">Resources</h1>
-                    <ul className='flex flex-col text-md gap-2'>
+                    <ul className='flex flex-col text-xl gap-4'>
                         <li><a href="#" className="hover:underline">Blog</a></li>
                         <li><a href="#" className="hover:underline">FAQs</a></li>
                         <li><a href="#" className="hover:underline">Guides</a></li>

@@ -20,6 +20,7 @@ export const HandleAddProperty = async (req: AuthRequest, res: Response) => {
             price: formData.price,
             location: formData.location,
             images: formData.images,
+            tags: formData.tags,
             bedrooms: formData.bedrooms,
             bathrooms: formData.bathrooms,
             userId: req.user?.id,
@@ -60,13 +61,23 @@ export const HandleAddToFav = async (req: AuthRequest, res: Response) => {
         if (!user) return res.status(404).json({ message: "User not found" });
         if (!property) return res.status(404).json({ message: "Property not found" });
 
-        const index = user.favorites.findIndex((fav) => fav === id);
-        index > -1 ? user.favorites.splice(index, 1) : user.favorites.push(id);
+        const isAlreadyFav = user.favorites.some((fav) => fav.toString() === id);
+
+        let message = "";
+
+        if (isAlreadyFav) {
+            user.favorites = user.favorites.filter((fav) => fav.toString() !== id);
+            message = "Removed from favorites successfully";
+        } else {
+            // Add if not exists
+            user.favorites.push(id);
+            message = "Added to favorites successfully";
+        }
 
         await user.save();
 
         res.status(200).json({
-            message: 'Success',
+            message, 
             favorites: user.favorites,
         });
     } catch (error) {
@@ -102,5 +113,65 @@ export const getUserProperties = async (req: AuthRequest, res: Response) => {
     } catch (error) {
         console.error("Error fetching properties:", error);
         res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+
+
+export const GetUserUniqueProp = async (req: Request, res: Response) => {
+    try {
+        console.log("🚀 Request received at /Uniqueprop with body:", req.body);
+
+        const { propertyID, userID } = req.body;
+
+        if (!propertyID || !userID) {
+            console.log("Missing Credentials:", { propertyID, userID });
+            return res.status(400).json({ message: "Credentials are required" });
+        }
+
+        console.log("🔍 Searching for Property with ID:", propertyID);
+
+        const property = await Property.findById(propertyID);
+
+        if (!property) {
+            console.log("❌ Property not found in database for ID:", propertyID);
+            return res.status(404).json({ message: "Property not found" });
+        }
+
+
+
+        const user = await User.findById(userID);
+
+        if (!user) {
+            console.log("User not found in database for ID:", userID);
+            return res.status(404).json({ message: "User not found" });
+        }
+
+
+        return res.status(200).json({ property, user });
+
+    } catch (error) {
+        console.error("Server Error:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+export const Info = async (req: Request, res: Response) => {
+    try {
+        const Users = await User.find();
+        if (Users.length === 0) {
+            return res.status(404).json({ message: 'No users found' });
+        }
+
+        const props = await Property.find();
+        if (props.length === 0) {
+            return res.status(404).json({ message: 'No properties found' });
+        }
+
+        res.status(200).json({ message: 'Information', Users, props });
+
+    } catch (error) {
+        console.error("Server Error:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
     }
 };
