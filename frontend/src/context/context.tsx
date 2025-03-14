@@ -17,6 +17,8 @@ interface AppContextType {
   SetOriginolProperties: (value: any[]) => void;
   Users: any[];
   SetUsers: (value: any[]) => void;
+  IsConnectionDisable: boolean;
+  SetIsConnectionDisable: (value: boolean) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -33,7 +35,9 @@ export const AppContext = createContext<AppContextType>({
   OriginolProperties: [],
   SetOriginolProperties: () => { },
   Users: [],
-  SetUsers: () => { }
+  SetUsers: () => { },
+  IsConnectionDisable: false,
+  SetIsConnectionDisable: () => {}
 });
 
 interface AppProviderProps {
@@ -45,6 +49,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   const [IsSignOpen, SetIsSignOpen] = useState(false);
   const [IsSideBarOpen, SetIsSidebarOpen] = useState(false);
   const [IsPropertyOpen, SetIsPropertyOpen] = useState(false);
+  
+  const [IsConnectionDisable, SetIsConnectionDisable] = useState(false)
 
   const [Properties, SetProperties] = useState<any>(null);
   const [OriginolProperties, SetOriginolProperties] = useState<any>(null);
@@ -57,7 +63,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       IsSideBarOpen, SetIsSidebarOpen,
       IsPropertyOpen, SetIsPropertyOpen,
       Properties, SetProperties, OriginolProperties, SetOriginolProperties,
-      Users, SetUsers
+      Users, SetUsers, IsConnectionDisable, SetIsConnectionDisable
     }}>
       {children}
     </AppContext.Provider>

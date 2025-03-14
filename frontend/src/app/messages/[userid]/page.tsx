@@ -1,11 +1,57 @@
+"use client";
+
+import io, { Socket } from "socket.io-client";
+import { useEffect, useRef, useState } from "react";
+import { useSession } from "next-auth/react";
+
 export default function UserMessages({ params }: { params: { userid: string } }) {
-    return (
-      <div className="p-4">
-        <h1 className="text-xl font-bold">Chat with {params.userid}</h1>
-        <div className="mt-4 border p-4 rounded-lg">
-          <p>Message history with {params.userid} will appear here...</p>
-        </div>
-      </div>
-    );
-  }
+  const { data: session } = useSession();
+  const socketRef = useRef<Socket | null>(null);
+  const [messages, setMessages] = useState<{ from: string; message: string }[]>([]);
+
+  const loggedInUserId = session?.user?.id || "user1";
+  const recipientId = params.userid;
+  const roomId = [loggedInUserId, recipientId].sort().join("-");
+
+  useEffect(() => {
+    if (!socketRef.current) {
+      socketRef.current = io("http://localhost:5200");
+    }
   
+    socketRef.current.emit("join_room", roomId);
+  }, [roomId]); 
+
+  useEffect(() => {
+    if (!socketRef.current) return;
+  
+    const handleMessage = (data: { from: string; message: string }) => {
+      setMessages((prev) => [...prev, data]);
+    };
+  
+    socketRef.current.on("receive_message", handleMessage);
+  
+    return () => {
+      socketRef.current?.off("receive_message", handleMessage);
+    };
+  }, []);
+
+  return (
+    <div className="flex flex-col h-screen bg-gray-100">
+      {/* Messages Display */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`p-3 rounded-lg max-w-xs ${
+              msg.from === loggedInUserId
+                ? "bg-blue-500 text-white self-end ml-auto"
+                : "bg-gray-200 text-black self-start"
+            }`}
+          >
+            {msg.message}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
