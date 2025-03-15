@@ -18,6 +18,10 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
+app.get('/', (req: Request, res: Response) => {
+    res.send('Server is running...');
+});
+
 app.use('/api/auth', auth);
 app.use('/api/prop', prop);
 
