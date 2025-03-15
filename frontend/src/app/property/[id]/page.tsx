@@ -20,9 +20,23 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 
 const PropertyDetails = () => {
+
+    interface Property {
+        id: string;
+        title: string;
+        price: number;
+        location: string;
+        bedrooms: number;
+        bathrooms: number;
+        propertyType: string;
+        description: string;
+        images: string[];
+        tags: string[];
+      }
+
     const params = useParams();
     const searchParams = useSearchParams();
-    const [property, setProperty] = useState<any>(null);
+    const [property, setProperty] = useState<Property | null>(null);
 
     const propertyID = params?.id;
     const userID = searchParams.get("userID");

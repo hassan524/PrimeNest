@@ -55,7 +55,7 @@ const SellPropertyDialog = () => {
     price: 0,
     propertyType: "",
   });
-  const handleImageUpload = async (e: any) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
 
@@ -85,7 +85,7 @@ const SellPropertyDialog = () => {
     }));
   };
 
-  const handleTagKeyDown = (e: any) => {
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && formData.inputValue.trim()) {
       e.preventDefault();
       if (!formData.tags.includes(formData.inputValue.trim())) {
@@ -98,19 +98,19 @@ const SellPropertyDialog = () => {
     }
   };
 
-  const removeTag = (tag: any) => {
+  const removeTag = (tag: string) => {
     setFormData((prev) => ({
       ...prev,
       tags: prev.tags.filter((t) => t !== tag),
     }));
   };
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const sanitizedFormData = {

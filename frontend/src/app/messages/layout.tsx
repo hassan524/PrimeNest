@@ -10,7 +10,7 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
 
   const pathname = usePathname();
   const isChatOpen = pathname !== "/messages";
-  const { Users, IsConnectionDisable } = useAppContext();
+  const { Users } = useAppContext();
   const socketRef = useRef<Socket | null>(null);
   const [Message, SetMessage] = useState("");
   const { data: session } = useSession();

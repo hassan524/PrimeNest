@@ -10,7 +10,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { useAppContext } from '@/context/context';
 
 const FilterSection = () => {
-  const { Properties, SetProperties, OriginolProperties } = useAppContext();
+  const { SetProperties, OriginolProperties } = useAppContext();
   const router = useRouter();
 
   const [filters, setFilters] = useState({
@@ -25,17 +25,20 @@ const FilterSection = () => {
   };
 
   const handleSearch = () => {
+    if (!OriginolProperties) return;
+  
     const filteredProperties = OriginolProperties.filter(prop => {
       return (
-        (filters.bedrooms ? prop.bedrooms == filters.bedrooms : true) &&
-        (filters.bathrooms ? prop.bathrooms == filters.bathrooms : true) &&
-        (filters.minPrice ? prop.price >= filters.minPrice : true) &&
-        (filters.maxPrice ? prop.price <= filters.maxPrice : true)
+        (filters.bedrooms ? prop.bedrooms === Number(filters.bedrooms) : true) &&
+        (filters.bathrooms ? prop.bathrooms === Number(filters.bathrooms) : true) &&
+        (filters.minPrice ? prop.price >= Number(filters.minPrice) : true) &&
+        (filters.maxPrice ? prop.price <= Number(filters.maxPrice) : true)
       );
     });
-
+  
     SetProperties(filteredProperties);
   };
+  
 
   return (
     <div className="rounded-xl flex flex-col gap-6">

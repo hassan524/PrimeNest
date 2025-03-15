@@ -7,16 +7,29 @@ import { Navigation } from "swiper/modules";
 import { Swiper as SwiperType } from "swiper"; 
 import { ChevronLeft, ChevronRight } from "lucide-react"; 
 import { useAppContext } from '@/context/context';
-import { Span } from "next/dist/trace";
 
 const SwiperCarousel = () => {
     const swiperRef = useRef<SwiperType | null>(null);
     const { Properties } = useAppContext();
+
+    
     
     const propertiesArray = Array.isArray(Properties) ? Properties : [];
     const displayedProperties = [...propertiesArray.slice(0, 5)];
     while (displayedProperties.length < 5) {
-        displayedProperties.push(null); 
+        displayedProperties.push({
+            id: "", 
+            title: "No Property Available",
+            description: "No description available", 
+            price: 0, 
+            location: "Unknown",
+            tags: [], 
+            images: [],
+            bedrooms: 0,
+            bathrooms: 0,
+            userId: "",
+            propertyType: "N/A"
+        });
     }
 
     return (

@@ -4,11 +4,6 @@ import React, { useEffect, useState } from "react";
 import Cards from "@/components/Cards";
 import { useAppContext } from "@/context/context";
 
-interface Property {
-  propertyType: string;
-  // Add other expected fields here
-}
-
 const Page: React.FC = () => {
   const { Properties, SetProperties } = useAppContext();
   const [hydrated, setHydrated] = useState(false);

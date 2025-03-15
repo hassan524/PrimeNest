@@ -33,7 +33,7 @@ export default function LoginDialog() {
       password: formData.password,
     });
 
-    console.log(result)
+    console.log(result);
 
     if (result?.error) {
       toast.error("Invalid email or password");
@@ -73,7 +73,7 @@ export default function LoginDialog() {
         </form>
 
         <p className="text-center text-sm">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <button
             className="text-blue-900 font-medium hover:underline"
             onClick={handleSwitchToSignUp}

@@ -7,8 +7,6 @@ import axios from 'axios'
 import { apiRoute } from '../../utils/apiRoutes';
 import { useAppContext } from '@/context/context';
 
-
-
 const Area = () => {
 
     const [ForSaleProps, SetForSaleProps] = React.useState<number>(0);
@@ -24,15 +22,15 @@ const Area = () => {
         ])
             .then(([infoRes, propertyRes]) => {
                 if (infoRes.data) {
-                    const forsale = infoRes.data.props.filter((prop: any) => prop.propertyType === "For Sale");
-                    const forrent = infoRes.data.props.filter((prop: any) => prop.propertyType === "For Rent");
-    
+                    const forsale = infoRes.data.props.filter((prop: { propertyType: string }) => prop.propertyType === "For Sale");
+                    const forrent = infoRes.data.props.filter((prop: { propertyType: string }) => prop.propertyType === "For Rent");
+
                     SetForSaleProps(forsale.length || 0);
                     SetForRentProps(forrent.length || 0);
                     SetUsersCount(infoRes.data.Users?.length || 0);
                     SetUsers(infoRes.data.Users)
                 }
-    
+
                 if (propertyRes.data) {
                     SetProperties(propertyRes.data.properties);
                     SetOriginolProperties(propertyRes.data.properties);
@@ -40,7 +38,7 @@ const Area = () => {
             })
             .catch((error) => console.log(error?.message || "Something went wrong"));
     }, []);
-    
+
 
     const { ref, inView } = useInView({ triggerOnce: true });
 
@@ -53,7 +51,7 @@ const Area = () => {
                 </p>
             </div>
 
-            <div className="flex items-center  gap-[4rem] bg-[#F8FAFC] justify-center flex-wrap">
+            <div className="flex items-center gap-[4rem] bg-[#F8FAFC] justify-center flex-wrap">
 
                 <div className="w-80 h-[40vh] flex flex-col gap-5 justify-center items-center">
                     <div ref={ref} className="text-5xl font-bold">

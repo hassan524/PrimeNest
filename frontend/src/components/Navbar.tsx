@@ -14,14 +14,14 @@ const Navbar = () => {
   const pathname = usePathname();
   const { SetIsSidebarOpen, SetIsSignOpen, SetIsLoginOpen } = useContext(AppContext);
   
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth <= 640); 
     };
 
-    handleResize(); // Initialize
+    handleResize();
     window.addEventListener("resize", handleResize);
     
     return () => window.removeEventListener("resize", handleResize);

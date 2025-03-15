@@ -6,10 +6,17 @@ import { useSession } from "next-auth/react";
 import { apiRoute } from "../../utils/apiRoutes";
 import { Skeleton } from "@/components/ui/skeleton";
 
+interface Property {
+    images: string[];
+    title: string;
+    location: string;
+    price: number;
+}
+
 const UserItems = () => {
     const { data: session } = useSession();
-    const [favorites, setFavorites] = useState<any[]>([]);
-    const [userProperties, setUserProperties] = useState<any[]>([]);
+    const [favorites, setFavorites] = useState<Property[]>([]);
+    const [userProperties, setUserProperties] = useState<Property[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
