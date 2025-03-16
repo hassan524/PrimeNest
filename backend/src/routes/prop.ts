@@ -1,5 +1,5 @@
 import express from 'express';
-import asyncErrorHandler from '../../utils/AsyncErrorHandler';
+import asyncErrorHandler from '../utils/AsyncErrorHandler';
 import { HandleAddProperty, HandleGetPropertys, HandleAddToFav, HandleGetFav, getUserProperties, GetUserUniqueProp, Info } from '../controller/propController';
 import authorize from '../middlewares/authorize';
 

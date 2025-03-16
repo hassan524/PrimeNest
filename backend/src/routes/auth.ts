@@ -1,6 +1,6 @@
 import express from 'express';
 import { UserLogin, UserSignUp, AuthCheck, } from '../controller/authController';
-import asyncErrorHandler from '../../utils/AsyncErrorHandler';
+import asyncErrorHandler from '../utils/AsyncErrorHandler';
 
 const router = express.Router();
 
