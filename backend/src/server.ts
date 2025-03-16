@@ -14,13 +14,20 @@ const app = express();
 const server = http.createServer(app);
 setupSocket(server);
 
-const corsOptions = {
-  origin: 'https://prime-nest-a9x1.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'], 
-};
-
-app.use(cors(corsOptions)); 
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            console.log("Origin:", origin);
+            const allowedOrigins = [process.env.FRONTED_URL];
+            if (!origin || allowedOrigins.includes(origin)) { 
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        credentials: true,
+    })
+);
 
 app.use(express.json());
 app.use(cookieParser());
