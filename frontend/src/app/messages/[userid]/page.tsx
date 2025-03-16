@@ -3,37 +3,44 @@
 import io, { Socket } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
 
-interface UserMessagesProps {
-  params: { userid: string };
-}
-
-export default function UserMessages({ params }: UserMessagesProps) {
+export default function UserMessages() {
   const { data: session } = useSession();
   const socketRef = useRef<Socket | null>(null);
   const [messages, setMessages] = useState<{ from: string; message: string }[]>([]);
 
+  const params = useParams();
+  const recipientId = params?.userid as string;
+
+  if (!recipientId) {
+    return <div className="text-center p-4">Invalid User ID</div>;
+  }
+
   const loggedInUserId = session?.user?.id || "user1";
-  const recipientId = params.userid;
   const roomId = [loggedInUserId, recipientId].sort().join("-");
 
   useEffect(() => {
     if (!socketRef.current) {
       socketRef.current = io("http://localhost:5200");
     }
-  
+
     socketRef.current.emit("join_room", roomId);
-  }, [roomId]); 
+
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  }, [roomId]);
 
   useEffect(() => {
     if (!socketRef.current) return;
-  
+
     const handleMessage = (data: { from: string; message: string }) => {
       setMessages((prev) => [...prev, data]);
     };
-  
+
     socketRef.current.on("receive_message", handleMessage);
-  
+
     return () => {
       socketRef.current?.off("receive_message", handleMessage);
     };

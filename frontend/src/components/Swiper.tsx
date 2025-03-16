@@ -18,7 +18,7 @@ const SwiperCarousel = () => {
     const displayedProperties = [...propertiesArray.slice(0, 5)];
     while (displayedProperties.length < 5) {
         displayedProperties.push({
-            id: "", 
+            _id: "", 
             title: "No Property Available",
             description: "No description available", 
             price: 0, 
