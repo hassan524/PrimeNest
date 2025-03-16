@@ -15,19 +15,10 @@ const server = http.createServer(app);
 setupSocket(server);
 
 app.use(
-  cors({
-    origin: function (origin, callback) {
-      console.log("Origin:", origin);
-      const allowedOrigins = [process.env.FRONTEND_URL];
-      // Allow if there's no origin (e.g., curl/Postman) or if the origin matches exactly.
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
+    cors({
+        origin: '*',
+        credentials: true,
+    })
 );
 
 app.use(express.json());
