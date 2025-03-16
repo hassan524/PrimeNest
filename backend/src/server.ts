@@ -14,7 +14,12 @@ const app = express();
 const server = http.createServer(app);
 setupSocket(server);
 
-app.use(cors());
+const corsOptions = {
+  origin: 'https://prime-nest-a9x1.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  allowedHeaders: ['Content-Type', 'Authorization'], 
+};
+
 app.use(express.json());
 app.use(cookieParser());
 
