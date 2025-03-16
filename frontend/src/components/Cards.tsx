@@ -58,6 +58,16 @@ const PropertyList = () => {
             toast.error("Something went wrong");
         }
     };
+
+    const handleViewDetails = (property: Property) => {
+        if (!property?._id || !property?.userId) {
+            console.error("Property ID or User ID is missing!");
+            return;
+        }
+
+        router.push(`/property/${property._id}?userID=${property.userId}`);
+    };
+
     return (
         <div className="flex flex-col gap-[4rem] lg:px-0 mt-[2rem]">
             {loading
@@ -109,7 +119,12 @@ const PropertyList = () => {
                                         <i className="fas fa-bath"></i> {property.bathrooms} Baths
                                     </span>
                                 </div>
-                                <Button className="w-28 text-white py-2 rounded-md" onClick={() => router.push(`/property/${property._id}`)}>View Details</Button>
+                                <Button
+                                    className="w-28 text-white py-2 rounded-md"
+                                    onClick={() => handleViewDetails(property)}
+                                >
+                                    View Details
+                                </Button>
                             </div>
                             <div className="lg:absolute sm:block hidden lg:right-6 lg:top-6 sm:mt-0 mt-4 text-right">
                                 <h2 className="sm:text-[2.5rem] text-2xl text-gray-800">${property.price.toLocaleString()}</h2>

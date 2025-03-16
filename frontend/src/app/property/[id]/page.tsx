@@ -39,7 +39,7 @@ const PropertyDetails = () => {
     const [property, setProperty] = useState<Property | null>(null);
 
     const propertyID = params?.id;
-    const userID = searchParams.get("id");
+    const userID = searchParams.get("userID");
 
     useEffect(() => {
         if (!userID || !propertyID) return;
