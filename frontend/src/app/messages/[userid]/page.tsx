@@ -22,7 +22,7 @@ export default function UserMessages() {
 
   useEffect(() => {
     if (!socketRef.current) {
-      socketRef.current = io(`${process.env.NEXT_PUBLIC_BACKEND_URL}`);
+      socketRef.current = io(`https://prime-nest-4q17.vercel.app`);
     }
 
     socketRef.current.emit("join_room", roomId);

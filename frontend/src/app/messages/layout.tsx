@@ -22,7 +22,7 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
   const recipientId = pathname.startsWith("/messages/") ? pathParts[2] : null;
 
   if (!socketRef.current) {
-    socketRef.current = io(`${process.env.NEXT_PUBLIC_BACKEND_URL}`);
+    socketRef.current = io(`https://prime-nest-4q17.vercel.app`);
   }
 
   const handleNavigate = (id: string) => {
