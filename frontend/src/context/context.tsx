@@ -2,7 +2,7 @@
 import { createContext, useState, ReactNode, useContext } from "react";
 
 export interface Property {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   price: number;

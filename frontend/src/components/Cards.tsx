@@ -9,7 +9,8 @@ import { Button } from "./ui/button";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
-import { toast } from "sonner"; 
+import { toast } from "sonner";
+import { Property } from "@/context/context";
 
 const PropertyList = () => {
     const { Properties, SetProperties, SetOriginolProperties } = useAppContext();
@@ -35,7 +36,7 @@ const PropertyList = () => {
                     Authorization: session?.user?.token,
                 }
             }).then(res => {
-                const favIds = res.data.favorites.map((fav: any) => fav._id.toString());
+                const favIds = res.data.favorites.map((fav: Property) => fav._id.toString());
                 setFavorites(favIds);
             }).catch(err => console.error("Error fetching favorites", err));
         }
@@ -49,8 +50,8 @@ const PropertyList = () => {
                     Authorization: session?.user?.token,
                 },
             });
-                setFavorites(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
-                toast.success(res.data.message);
+            setFavorites(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
+            toast.success(res.data.message);
         } catch (error) {
             console.error("Error updating favorites", error);
             toast.error("Something went wrong");
@@ -76,15 +77,14 @@ const PropertyList = () => {
                             <div className="sm:w-80 relative w-full h-48">
                                 <img src={property.images[0]} alt={property.title} className="w-full h-full object-cover rounded-md" />
 
-                                {/* ✅ Heart button inside the image container */}
                                 <button
                                     className="absolute top-2 left-2 p-2 rounded-full transition"
                                     onClick={() => handleFavorite(property._id)}
                                 >
-                                   <Heart
-    className={favorites.includes(property._id.toString()) ? "text-red-500 fill-red-500" : "text-white"}
-    size={24}
-/>
+                                    <Heart
+                                        className={favorites.includes(property._id.toString()) ? "text-red-500 fill-red-500" : "text-white"}
+                                        size={24}
+                                    />
 
                                 </button>
                             </div>

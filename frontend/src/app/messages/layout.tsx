@@ -20,8 +20,6 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
   const pathParts = pathname.split("/");
   const userid = pathParts.length > 2 ? pathParts[2] : null;
   const recipientId = pathname.startsWith("/messages/") ? pathParts[2] : null;
-  const loggedInUserId = session?.user?.id || "user1"; 
-  const roomId = recipientId ? [loggedInUserId, recipientId].sort().join("-") : null;
 
   if (!socketRef.current) {
     socketRef.current = io("http://localhost:5200");

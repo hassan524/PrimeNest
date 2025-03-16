@@ -9,7 +9,7 @@ import { signOut } from "next-auth/react";
 const Dropdown = () => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
 
     const { SetIsPropertyOpen, SetIsLoginOpen, SetIsSignOpen } = useAppContext();
 

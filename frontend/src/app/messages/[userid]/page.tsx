@@ -4,7 +4,11 @@ import io, { Socket } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 
-export default function UserMessages({ params }: { params: { userid: string } }) {
+interface UserMessagesProps {
+  params: { userid: string };
+}
+
+export default function UserMessages({ params }: UserMessagesProps) {
   const { data: session } = useSession();
   const socketRef = useRef<Socket | null>(null);
   const [messages, setMessages] = useState<{ from: string; message: string }[]>([]);

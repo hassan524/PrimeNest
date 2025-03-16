@@ -65,7 +65,7 @@ const SellPropertyDialog = () => {
       const imageURL = await uploadImage(file);
 
       if (imageURL) {
-        setFormData((prev: any) => ({
+        setFormData((prev) => ({
           ...prev,
           previewImages: [...prev.previewImages, imageURL],
           images: [...prev.images, imageURL],
@@ -153,8 +153,13 @@ const SellPropertyDialog = () => {
 
 
       SetIsPropertyOpen(false);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Something went wrong!");
+      
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response) {
+        toast.error(error.response.data?.message || "Something went wrong!");
+      } else {
+        toast.error("Something went wrong!");
+      }
     }
   };
 

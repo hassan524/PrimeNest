@@ -42,8 +42,12 @@ export default function SignUpDialog() {
       console.log(response)
       toast.success("Account created successfully!");
       SetIsSignOpen(false);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Something went wrong!");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response) {
+        toast.error(error.response.data?.message || "Something went wrong!");
+      } else {
+        toast.error("Something went wrong!");
+      }
     }
   };
 
