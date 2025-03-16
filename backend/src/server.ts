@@ -15,12 +15,20 @@ const server = http.createServer(app);
 setupSocket(server);
 
 app.use(
-  cors({
-    origin: process.env.FRONTEND_URL || "https://prime-nest-a9x1.vercel.app/", // Change to your frontend domain
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true, 
-  })
+    cors({
+        origin: function (origin, callback) {
+            console.log("Origin:", origin);
+            const allowedOrigins = [process.env.FRONTED_URL];
+            if (!origin || allowedOrigins.includes(origin)) { 
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        credentials: true,
+    })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
