@@ -22,6 +22,7 @@ const PropertyList = () => {
     useEffect(() => {
         axios.get(apiRoute.GetProperty)
             .then(res => {
+                console.log(Properties)
                 SetProperties(res.data.properties);
                 SetOriginolProperties(res.data.properties);
                 setLoading(false);

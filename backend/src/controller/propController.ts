@@ -39,7 +39,6 @@ export const HandleAddProperty = async (req: AuthRequest, res: Response) => {
 
 export const HandleGetPropertys = async (req: Request, res: Response) => {
     try {
-        res.json({ message: "API is working!" });
         const properties = await Property.find();
         res.status(200).json({ success: true, properties });
     } catch (error) {
