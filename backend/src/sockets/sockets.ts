@@ -1,10 +1,15 @@
 import { Server } from 'socket.io';
 
 const setupSocket = (server: any) => {
-  const io = new Server(server, {
-    cors: { origin: `${process.env.FRONTEND_URL}`, methods: ["GET", "POST"] }
-  });
 
+  const io = new Server(server, {
+    cors: {
+      origin: process.env.FRONTEND_URL, 
+      methods: ["GET", "POST"],
+      credentials: true, 
+    }
+  });
+  
   io.on("connection", (socket) => {
 
     socket.on('join_room', (data) => {
