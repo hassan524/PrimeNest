@@ -22,7 +22,7 @@ export default function UserMessages() {
 
   useEffect(() => {
     if (!socketRef.current) {
-      socketRef.current = io("http://localhost:5200");
+      socketRef.current = io(`${process.env.NEXT_PUBLIC_BACKEND_URL}`);
     }
 
     socketRef.current.emit("join_room", roomId);
