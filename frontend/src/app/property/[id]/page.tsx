@@ -42,6 +42,7 @@ const PropertyDetails = () => {
     const userID = searchParams.get("id");
 
     useEffect(() => {
+        console.log(propertyID || 'didnt get d')
         if (!userID || !propertyID) return;
 
         axios
