@@ -14,7 +14,13 @@ const app = express();
 const server = http.createServer(app);
 setupSocket(server);
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "https://prime-nest-a9x1.vercel.app/", // Change to your frontend domain
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, 
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
