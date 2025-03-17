@@ -22,7 +22,6 @@ app.use(
   })
 );
 
-setupSocket(server);
 
 app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Origin", "https://prime-nest-a9x1.vercel.app");
@@ -39,6 +38,7 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Server is running...');
 });
 
+setupSocket(server);
 app.use('/api/auth', auth);
 app.use('/api/prop', prop);
 
