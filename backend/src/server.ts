@@ -22,6 +22,13 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://prime-nest-a9x1.vercel.app");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
 
 app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Origin", "https://prime-nest-a9x1.vercel.app");
