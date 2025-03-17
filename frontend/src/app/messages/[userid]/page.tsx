@@ -21,9 +21,12 @@ export default function UserMessages() {
   const roomId = [loggedInUserId, recipientId].sort().join("-");
 
   useEffect(() => {
-    if (!socketRef.current) {
-      socketRef.current = io(`https://prime-nest-4q17.vercel.app`);
-    }
+     if (!socketRef.current) {
+    socketRef.current = io("https://prime-nest-4q17.vercel.app", {
+      transports: ["polling", "websocket"],
+      withCredentials: true,
+    });
+  }
 
     socketRef.current.emit("join_room", roomId);
 
