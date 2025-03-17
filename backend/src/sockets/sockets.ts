@@ -4,7 +4,7 @@ const setupSocket = (server: any) => {
 
 const io = new Server(server, {
   cors: {
-    origin: "https://prime-nest-a9x1.vercel.app",
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true
   }
