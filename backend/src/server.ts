@@ -12,7 +12,6 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-setupSocket(server);
 
 app.use(
   cors({
@@ -22,6 +21,8 @@ app.use(
     credentials: true,
   })
 );
+
+setupSocket(server);
 
 app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Origin", "https://prime-nest-a9x1.vercel.app");
