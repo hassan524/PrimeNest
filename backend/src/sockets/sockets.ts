@@ -4,9 +4,12 @@ const setupSocket = (server: any) => {
 
 const io = new Server(server, {
   cors: {
-    origin: "*",  
-  },
+    origin: "https://prime-nest-a9x1.vercel.app",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
 });
+  
   io.on("connection", (socket) => {
 
     socket.on('join_room', (data) => {
