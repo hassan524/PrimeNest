@@ -4,11 +4,8 @@ const setupSocket = (server: any) => {
 
 const io = new Server(server, {
   cors: {
-    origin: "https://prime-nest-a9x1.vercel.app",  // Replace with your actual frontend URL
-    methods: ["GET", "POST"],
-    credentials: true, 
+    origin: "*",  
   },
-  transports: ["websocket", "polling"],
 });
   io.on("connection", (socket) => {
 
