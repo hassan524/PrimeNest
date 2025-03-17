@@ -16,7 +16,7 @@ setupSocket(server);
 
 app.use(
   cors({
-    origin: "https://prime-nest-a9x1.vercel.app", 
+    origin: "*", 
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
