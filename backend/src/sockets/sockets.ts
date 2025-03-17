@@ -2,14 +2,14 @@ import { Server } from 'socket.io';
 
 const setupSocket = (server: any) => {
 
-  const io = new Server(server, {
-    cors: {
-      origin: "*",  
-      methods: ["GET", "POST"],
-      credentials: true,
-    }
-  });
-  
+const io = new Server(server, {
+  cors: {
+    origin: "*",  
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+  transports: ["websocket"], 
+});
   io.on("connection", (socket) => {
 
     socket.on('join_room', (data) => {
