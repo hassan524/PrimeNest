@@ -7,9 +7,9 @@ const io = new Server(server, {
     origin: "*",  
     methods: ["GET", "POST"],
     credentials: true,
-  },
-  transports: ["websocket"], 
+  }
 });
+
   io.on("connection", (socket) => {
 
     socket.on('join_room', (data) => {
