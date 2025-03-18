@@ -22,7 +22,7 @@ export default function UserMessages() {
 
   useEffect(() => {
      if (!socketRef.current) {
-    socketRef.current = io("https://prime-nest-4q17.vercel.app", {
+    socketRef.current = io("https://primenest-backend.up.railway.app/", {
       transports: ["polling", "websocket"],
       withCredentials: true,
     });
