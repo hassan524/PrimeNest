@@ -41,25 +41,24 @@ const setupSocket = (server: any) => {
 
     socket.on("send_message", async (data) => {
       try {
+    
         const messageData = {
-          senderId: data.senderId,
-          text: data.text,
+          from: data.from,  
+          to: data.to,      
+          message: data.message, 
           timestamp: admin.firestore.FieldValue.serverTimestamp(),
         };
     
-        await db
-          .collection("messages") 
-          .doc(data.roomId)       
-          .collection("chats")     
-          .add(messageData);
-    
-        io.to(data.roomId).emit("receive_message", {
+        await db.collection("messages").add({
           ...messageData,
           roomId: data.roomId,  
         });
     
-        console.log("Message sent and saved:", { ...messageData, roomId: data.roomId });
+        console.log("Message stored in Firestore:", messageData);
     
+        socket.to(data.roomId).emit("receive_message", messageData);
+    
+        console.log("Message sent to room:", data.roomId);
       } catch (error) {
         console.error("Error saving message:", error);
       }
