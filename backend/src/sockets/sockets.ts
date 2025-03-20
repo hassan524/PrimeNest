@@ -40,30 +40,42 @@ const setupSocket = (server: any) => {
       socket.emit("room_status", { room, status: isJoined });
     });
 
-    socket.on("send_message", async (data) => {
-      try {
+   socket.on("send_message", async (data) => {
+  try {
+    // ✅ Create message object
+    const messageData: any = {
+      from: data.from ?? null,  
+      to: data.to ?? null,      
+      message: data.message ?? null, 
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    };
+
+    // ✅ Remove undefined values
+    Object.keys(messageData).forEach(
+      (key) => messageData[key] === undefined && delete messageData[key]
+    );
+
+    console.log("Final Message Data Before Saving:", messageData);
+
+    // ✅ Add message to Firestore and get the document reference
+    const docRef = await db.collection("messages").add(messageData);
     
-        const messageData = {
-          from: data.from,  
-          to: data.to,      
-          message: data.message, 
-          timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        };
-    
-        await db.collection("messages").add({
-          ...messageData,
-          roomId: data.roomId,  
-        });
-    
-        console.log("Message stored in Firestore:", messageData);
-    
-        socket.to(data.roomId).emit("receive_message", messageData);
-    
-        console.log("Message sent to room:", data.roomId);
-      } catch (error) {
-        console.error("Error saving message:", error);
-      }
-    });
+    // ✅ Get the generated Firestore document ID
+    const docId = docRef.id;
+
+    // ✅ Now update the document to include its own ID as `roomId`
+    await docRef.update({ roomId: docId });
+
+    // ✅ Send updated message data to clients
+    const finalMessageData = { ...messageData, roomId: docId };
+    socket.to(docId).emit("receive_message", finalMessageData);
+
+    console.log("Message stored with roomId:", docId);
+  } catch (error) {
+    console.error("Error saving message:", error);
+  }
+});
+
 
     socket.on("disconnect", () => {
       io.emit("user_disconnected");
