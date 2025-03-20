@@ -78,11 +78,11 @@ socket.on("send_message", async (data) => {
     console.log("✅ Final message data before saving:", messageData);
 
     // ✅ Save to Firestore
-    const docRef = await db.collection("messages").add(messageData);
-    const docId = docRef.id;
+    // const docRef = await db.collection("messages").add(messageData);
+    // const docId = docRef.id;
 
     // ✅ Update Firestore document with its own ID
-    await docRef.update({ messageId: docId });
+    // await docRef.update({ messageId: docId });
 
     // ✅ Emit the message back to the room
     const finalMessageData = { ...messageData, messageId: docId };
