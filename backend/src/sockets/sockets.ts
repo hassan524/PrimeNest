@@ -3,7 +3,7 @@ import admin from "../config/firebase";
 
 // ✅ Configure Firestore to ignore undefined values
 const db = admin.firestore();
-db.settings({ ignoreUndefinedProperties: true })
+db.settings({ ignoreUndefinedProperties: true });
 
 const setupSocket = (server: any) => {
   const io = new Server(server, {
@@ -21,25 +21,6 @@ const setupSocket = (server: any) => {
     socket.on("join_room", async (roomId) => {
       console.log(`📌 User joined room: ${roomId}`);
       socket.join(roomId);
-
-      // try {
-      //   // ✅ Fetch previous messages for the room
-      //   const messagesSnapshot = await db
-      //     .collection("messages")
-      //     .where("roomId", "==", roomId) 
-      //     .orderBy("timestamp", "asc")
-      //     .get();
-
-      //   const messages = messagesSnapshot.docs.map((doc) => ({
-      //     id: doc.id,
-      //     ...doc.data(),
-      //   }));
-
-      //   console.log(`📩 Sending previous messages for room ${roomId}`, messages);
-      //   socket.emit("previous_messages", messages);
-      // } catch (error) {
-      //   console.error("❌ Error fetching messages:", error);
-      // }
     });
 
     // ✅ Check if user is in a room
@@ -52,48 +33,48 @@ const setupSocket = (server: any) => {
     });
 
     // ✅ Sending a message
-socket.on("send_message", async (data) => {
-  try {
-    console.log("📨 Received message data:", data);
+    socket.on("send_message", async (data) => {
+      try {
+        console.log("📨 Received message data:", data);
 
-    if (!data.roomId || !data.from || !data.message) {
-      console.error("❌ Error: Missing required fields!", data);
-      return;
-    }
+        if (!data.roomId || !data.from || !data.message) {
+          console.error("❌ Error: Missing required fields!", data);
+          return;
+        }
 
-    // ✅ Create message object (Ensure no undefined values)
-    const messageData: any = {
-      from: data.from, 
-      to: data.to || "unknown", 
-      message: data.message,
-      timestamp: admin.firestore.FieldValue.serverTimestamp(),
-      roomId: data.roomId,
-    };
+        // ✅ Create message object (Ensure no undefined values)
+        const messageData: any = {
+          from: data.from, 
+          to: data.to || "unknown", 
+          message: data.message,
+          timestamp: admin.firestore.FieldValue.serverTimestamp(),
+          roomId: data.roomId,
+        };
 
-    // ✅ Remove any undefined fields (🔥 100% Fix)
-    Object.keys(messageData).forEach(
-      (key) => messageData[key] === undefined && delete messageData[key]
-    );
+        // ✅ Remove any undefined fields
+        Object.keys(messageData).forEach(
+          (key) => messageData[key] === undefined && delete messageData[key]
+        );
 
-    console.log("✅ Final message data before saving:", messageData);
+        console.log("✅ Final message data before saving:", messageData);
 
-    // ✅ Save to Firestore
-    // const docRef = await db.collection("messages").add(messageData);
-    // const docId = docRef.id;
+        // ✅ Save to Firestore
+        const docRef = await db.collection("messages").add(messageData);
+        const docId = docRef.id;  // ✅ Ensure `docId` is set
 
-    // ✅ Update Firestore document with its own ID
-    // await docRef.update({ messageId: docId });
+        // ✅ Update Firestore document with its own ID
+        await docRef.update({ messageId: docId });
 
-    // ✅ Emit the message back to the room
-    const finalMessageData = { ...messageData, messageId: docId };
-    io.to(data.roomId).emit("receive_message", finalMessageData);
+        // ✅ Emit the message back to the room
+        const finalMessageData = { ...messageData, messageId: docId };
+        io.to(data.roomId).emit("receive_message", finalMessageData);
 
-    console.log(`✅ Message stored in Firestore with ID: ${docId}`);
+        console.log(`✅ Message stored in Firestore with ID: ${docId}`);
 
-  } catch (error) {
-    console.error("❌ Error saving message:", error);
-  }
-});
+      } catch (error) {
+        console.error("❌ Error saving message:", error);
+      }
+    });
 
     // ✅ Handle user disconnection
     socket.on("disconnect", () => {
