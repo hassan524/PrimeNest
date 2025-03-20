@@ -9,7 +9,7 @@ import { useAppContext } from "@/context/context";
 
 const Page = () => {
   
-       const { SetIsPropertyOpen } = useAppContext();
+const { SetIsPropertyOpen } = useAppContext();
 
   return (
 
