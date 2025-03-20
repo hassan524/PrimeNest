@@ -1,8 +1,8 @@
 import { Server } from 'socket.io';
 import admin from '../config/firebase';
 
+admin.firestore().settings({ ignoreUndefinedProperties: true }); 
 const db = admin.firestore();
-db.settings({ ignoreUndefinedProperties: true });
 
 const setupSocket = (server: any) => {
   const io = new Server(server, {
