@@ -52,23 +52,28 @@ const setupSocket = (server: any) => {
     });
 
     // ✅ Sending a message
-   socket.on("send_message", async (data) => {
+socket.on("send_message", async (data) => {
   try {
     console.log("📨 Received message data:", data);
 
-    if (!data.roomId || !data.from || !data.message || !data.senderId) {
+    if (!data.roomId || !data.from || !data.message) {
       console.error("❌ Error: Missing required fields!", data);
       return;
     }
 
     // ✅ Create message object (Ensure no undefined values)
-    const messageData = {
+    const messageData: any = {
       from: data.from, 
-      to: data.to || "unknown", // Use a default value if undefined
+      to: data.to || "unknown", 
       message: data.message,
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
       roomId: data.roomId,
     };
+
+    // ✅ Remove any undefined fields (🔥 100% Fix)
+    Object.keys(messageData).forEach(
+      (key) => messageData[key] === undefined && delete messageData[key]
+    );
 
     console.log("✅ Final message data before saving:", messageData);
 
