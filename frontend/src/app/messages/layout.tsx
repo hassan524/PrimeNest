@@ -16,7 +16,7 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
   const { data: session } = useSession();
   const router = useRouter();
   console.log(session)
-
+  
   const pathParts = pathname.split("/");
   const userid = pathParts.length > 2 ? pathParts[2] : null;
   const recipientId = pathname.startsWith("/messages/") ? pathParts[2] : null;
