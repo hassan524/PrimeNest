@@ -22,24 +22,24 @@ const setupSocket = (server: any) => {
       console.log(`📌 User joined room: ${roomId}`);
       socket.join(roomId);
 
-      try {
-        // ✅ Fetch previous messages for the room
-        const messagesSnapshot = await db
-          .collection("messages")
-          .where("roomId", "==", roomId) 
-          .orderBy("timestamp", "asc")
-          .get();
+      // try {
+      //   // ✅ Fetch previous messages for the room
+      //   const messagesSnapshot = await db
+      //     .collection("messages")
+      //     .where("roomId", "==", roomId) 
+      //     .orderBy("timestamp", "asc")
+      //     .get();
 
-        const messages = messagesSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+      //   const messages = messagesSnapshot.docs.map((doc) => ({
+      //     id: doc.id,
+      //     ...doc.data(),
+      //   }));
 
-        console.log(`📩 Sending previous messages for room ${roomId}`, messages);
-        socket.emit("previous_messages", messages);
-      } catch (error) {
-        console.error("❌ Error fetching messages:", error);
-      }
+      //   console.log(`📩 Sending previous messages for room ${roomId}`, messages);
+      //   socket.emit("previous_messages", messages);
+      // } catch (error) {
+      //   console.error("❌ Error fetching messages:", error);
+      // }
     });
 
     // ✅ Check if user is in a room
