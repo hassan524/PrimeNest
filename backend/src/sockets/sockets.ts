@@ -2,8 +2,8 @@ import { Server } from "socket.io";
 import admin from "../config/firebase";
 
 // ✅ Configure Firestore to ignore undefined values
-admin.firestore().settings({ ignoreUndefinedProperties: true });
 const db = admin.firestore();
+db.settings({ ignoreUndefinedProperties: true })
 
 const setupSocket = (server: any) => {
   const io = new Server(server, {
@@ -26,7 +26,7 @@ const setupSocket = (server: any) => {
         // ✅ Fetch previous messages for the room
         const messagesSnapshot = await db
           .collection("messages")
-          .where("roomId", "==", roomId) // ✅ Now matching frontend!
+          .where("roomId", "==", roomId) 
           .orderBy("timestamp", "asc")
           .get();
 
