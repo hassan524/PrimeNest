@@ -3,7 +3,6 @@ import admin from "../config/firebase";
 
 // ✅ Configure Firestore to ignore undefined values
 const db = admin.firestore();
-db.settings({ ignoreUndefinedProperties: true });
 
 const setupSocket = (server: any) => {
   const io = new Server(server, {
