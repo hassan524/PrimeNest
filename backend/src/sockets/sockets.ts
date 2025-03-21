@@ -21,18 +21,15 @@ const setupSocket = (server: any) => {
       socket.join(roomId);
 
       try {
-        const messagesSnapshot = await db
-          .collection("messages")
-          .where("roomId", "==", roomId)
-          .orderBy("timestamp", "asc") // Oldest messages first
-          .get();
+        const roomRef = db.collection("messages").doc(roomId);
+        const roomDoc = await roomRef.get();
 
-        const messages = messagesSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        socket.emit("load_previous_messages", messages);
+        if (roomDoc.exists) {
+          const roomData = roomDoc.data();
+          socket.emit("load_previous_messages", roomData.messages || []);
+        } else {
+          socket.emit("load_previous_messages", []);
+        }
       } catch (error) {
         console.error("Error fetching previous messages:", error);
       }
@@ -47,25 +44,26 @@ const setupSocket = (server: any) => {
         return;
       }
 
+      const newMessage = {
+        from: messagePayload.from,
+        to: messagePayload.to,
+        message: messagePayload.message,
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      };
+
       try {
-        // Save message to Firestore
-        const messageRef = await db.collection("messages").add({
-          from: messagePayload.from,
-          to: messagePayload.to,
-          roomId: messagePayload.roomId,
-          message: messagePayload.message,
-          timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        });
+        const roomRef = db.collection("messages").doc(messagePayload.roomId);
 
-        console.log("Message saved to Firestore with ID:", messageRef.id);
+        await roomRef.set(
+          {
+            messages: admin.firestore.FieldValue.arrayUnion(newMessage),
+          },
+          { merge: true }
+        );
 
-        const savedMessage = {
-          id: messageRef.id,
-          ...messagePayload,
-          timestamp: new Date().toISOString(),
-        };
+        console.log("Message added to Firestore:", newMessage);
 
-        io.to(messagePayload.roomId).emit("receive_message", savedMessage);
+        io.to(messagePayload.roomId).emit("receive_message", newMessage);
       } catch (error) {
         console.error("Error saving message to Firestore:", error);
       }
