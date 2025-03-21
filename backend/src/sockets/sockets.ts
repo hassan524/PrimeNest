@@ -15,7 +15,6 @@ const setupSocket = (server: any) => {
   io.on("connection", (socket) => {
     console.log(`New client connected: ${socket.id}`);
 
-    // User joins a room
     socket.on("join_room", async (roomId) => {
       console.log(`User joined room: ${roomId}`);
       socket.join(roomId);
