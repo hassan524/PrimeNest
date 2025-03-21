@@ -22,7 +22,7 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
   const recipientId = pathname.startsWith("/messages/") ? pathParts[2] : null;
 
   if (!socketRef.current) {
-    socketRef.current = io("https://primenest-backend.up.railway.app/", {
+    socketRef.current = io("https://primenest-production.up.railway.app/", {
       transports: ["polling", "websocket"],
       withCredentials: true,
     });
