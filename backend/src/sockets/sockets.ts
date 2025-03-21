@@ -50,13 +50,14 @@ const setupSocket = (server: any) => {
       }
 
       try {
-        const messageData: any = {
-          from: messagePayload.from || "Unknown Sender",
-          to: messagePayload.to || "unknown",
-          message: messagePayload.message || "",
-          timestamp: admin.firestore.FieldValue.serverTimestamp(),
-          roomId: messagePayload.roomId || "unknown_room",
-        };
+       const messageData: any = {
+  senderId: data.senderId || "unknown_sender",
+  from: data.from || "Unknown Sender",
+  to: data.to || "unknown",
+  message: data.message || "",
+  timestamp: admin.firestore.FieldValue.serverTimestamp(),
+  roomId: data.roomId || "unknown_room",
+};
 
         console.error("✅ Before Removing Undefined Values:", JSON.stringify(messageData, null, 2));
 
