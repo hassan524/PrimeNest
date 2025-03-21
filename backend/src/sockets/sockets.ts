@@ -33,44 +33,52 @@ const setupSocket = (server: any) => {
     });
 
     // ✅ Sending a message
-socket.on("send_message", async (data) => {
-  console.error("⚡ send_message event TRIGGERED! 🚀"); // Use console.error for better visibility
+    socket.on("send_message", async (messagePayload) => {
+      console.error("⚡ send_message event TRIGGERED! 🚀");
 
-  if (!data) {
-    console.error("❌ No data received!");
-    return;
-  }
+      if (!messagePayload) {
+        console.error("❌ No message payload received!");
+        return;
+      }
 
-  console.error("📨 Received message data:", JSON.stringify(data, null, 2)); // Force logs
+      console.error("📨 Received message payload:", JSON.stringify(messagePayload, null, 2));
 
-  try {
-  const messageData: any = {
-   from: data.from || "Unknown Sender", // Prevent undefined
-   to: data.to || "unknown",
-   message: data.message || "",
-   timestamp: admin.firestore.FieldValue.serverTimestamp(),
-   roomId: data.roomId || "unknown_room",
- }
+      // ✅ Validate incoming messagePayload
+      if (!messagePayload.from || !messagePayload.message || !messagePayload.roomId) {
+        console.error("❌ Missing required fields in message payload!", messagePayload);
+        return;
+      }
 
-    console.error("✅ Before Removing Undefined Values:", JSON.stringify(messageData, null, 2));
+      try {
+        const messageData: any = {
+          from: messagePayload.from || "Unknown Sender",
+          to: messagePayload.to || "unknown",
+          message: messagePayload.message || "",
+          timestamp: admin.firestore.FieldValue.serverTimestamp(),
+          roomId: messagePayload.roomId || "unknown_room",
+        };
 
-    Object.keys(messageData).forEach(
-      (key) => messageData[key] === undefined && delete messageData[key]
-    );
+        console.error("✅ Before Removing Undefined Values:", JSON.stringify(messageData, null, 2));
 
-    console.error("✅ Final Message Data:", JSON.stringify(messageData, null, 2));
+        // 🔥 Remove undefined or null fields
+        Object.keys(messageData).forEach(
+          (key) => (messageData[key] === undefined || messageData[key] === null) && delete messageData[key]
+        );
 
-    const docRef = await db.collection("messages").add(messageData);
-    const docId = docRef.id;
-    await docRef.update({ messageId: docId });
+        console.error("✅ Final Message Data:", JSON.stringify(messageData, null, 2));
 
-    io.to(data.roomId).emit("receive_message", { ...messageData, messageId: docId });
+        const docRef = await db.collection("messages").add(messageData);
+        const docId = docRef.id;
+        await docRef.update({ messageId: docId });
 
-    console.error(`✅ Message stored in Firestore with ID: ${docId}`);
-  } catch (error) {
-    console.error("❌ Error saving message:", error);
-  }
-});
+        io.to(messagePayload.roomId).emit("receive_message", { ...messageData, messageId: docId });
+
+        console.error(`✅ Message stored in Firestore with ID: ${docId}`);
+      } catch (error) {
+        console.error("❌ Error saving message:", error);
+      }
+    });
+
     // ✅ Handle user disconnection
     socket.on("disconnect", () => {
       console.log(`❌ User disconnected: ${socket.id}`);
