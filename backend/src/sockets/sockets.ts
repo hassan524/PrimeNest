@@ -33,52 +33,23 @@ const setupSocket = (server: any) => {
     });
 
     // ✅ Sending a message
-    socket.on("send_message", async (messagePayload) => {
-      console.error("⚡ send_message event TRIGGERED! 🚀");
+    socket.on("send_message", (messagePayload) => {
+  console.error("📨 Received message payload:", JSON.stringify(messagePayload, null, 2));
 
-      if (!messagePayload) {
-        console.error("❌ No message payload received!");
-        return;
-      }
+  if (!messagePayload) {
+    console.error("❌ No messagePayload received!");
+    return;
+  }
 
-      console.error("📨 Received message payload:", JSON.stringify(messagePayload, null, 2));
+  if (!messagePayload.senderId) {
+    console.error("❌ senderId is missing or undefined!");
+  }
 
-      // ✅ Validate incoming messagePayload
-      if (!messagePayload.from || !messagePayload.message || !messagePayload.roomId) {
-        console.error("❌ Missing required fields in message payload!", messagePayload);
-        return;
-      }
+  // Just emit the message back to the room
+  io.to(messagePayload.roomId).emit("receive_message", messagePayload);
 
-      try {
-   const messageData: any = {
-      senderId: messagePayload.senderId || "unknown_sender",
-      from: messagePayload.from || "Unknown Sender",
-      to: messagePayload.to || "unknown",
-      message: messagePayload.message || "",
-      timestamp: admin.firestore.FieldValue.serverTimestamp(),
-      roomId: messagePayload.roomId || "unknown_room",
-    };
-
-        console.error("✅ Before Removing Undefined Values:", JSON.stringify(messageData, null, 2));
-
-        // 🔥 Remove undefined or null fields
-        Object.keys(messageData).forEach(
-          (key) => (messageData[key] === undefined || messageData[key] === null) && delete messageData[key]
-        );
-
-        console.error("✅ Final Message Data:", JSON.stringify(messageData, null, 2));
-
-        const docRef = await db.collection("messages").add(messageData);
-        const docId = docRef.id;
-        await docRef.update({ messageId: docId });
-
-        io.to(messagePayload.roomId).emit("receive_message", { ...messageData, messageId: docId });
-
-        console.error(`✅ Message stored in Firestore with ID: ${docId}`);
-      } catch (error) {
-        console.error("❌ Error saving message:", error);
-      }
-    });
+  console.error("✅ Message emitted to room:", messagePayload.roomId);
+});
 
     // ✅ Handle user disconnection
     socket.on("disconnect", () => {
