@@ -15,24 +15,35 @@ const setupSocket = (server: any) => {
   io.on("connection", (socket) => {
     console.log(`New client connected: ${socket.id}`);
 
+    // User joins a room
     socket.on("join_room", async (roomId) => {
       console.log(`User joined room: ${roomId}`);
       socket.join(roomId);
+
+      try {
+        const messagesSnapshot = await db
+          .collection("messages")
+          .where("roomId", "==", roomId)
+          .orderBy("timestamp", "asc") // Oldest messages first
+          .get();
+
+        const messages = messagesSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        socket.emit("load_previous_messages", messages);
+      } catch (error) {
+        console.error("Error fetching previous messages:", error);
+      }
     });
 
-    socket.on("check_room_status", (room) => {
-      const rooms = Array.from(socket.rooms);
-      const isJoined = rooms.includes(room);
-      console.log(`🔍 Checking room status: ${room} -> ${isJoined}`);
-
-      socket.emit("room_status", { room, status: isJoined });
-    });
-
+    // Send message event
     socket.on("send_message", async (messagePayload) => {
-      console.log("📨 Received message payload:", JSON.stringify(messagePayload, null, 2));
+      console.log("Received message payload:", messagePayload);
 
-      if (!messagePayload || !messagePayload.from || !messagePayload.to || !messagePayload.roomId || !messagePayload.message) {
-        console.error("❌ Invalid message payload!");
+      if (!messagePayload?.from || !messagePayload?.to || !messagePayload?.roomId || !messagePayload?.message) {
+        console.error("Invalid message payload!");
         return;
       }
 
@@ -46,18 +57,17 @@ const setupSocket = (server: any) => {
           timestamp: admin.firestore.FieldValue.serverTimestamp(),
         });
 
-        console.log("✅ Message saved to Firestore with ID:", messageRef.id);
+        console.log("Message saved to Firestore with ID:", messageRef.id);
 
-        // Emit message to the room
-        io.to(messagePayload.roomId).emit("receive_message", {
+        const savedMessage = {
           id: messageRef.id,
           ...messagePayload,
-          timestamp: new Date(), // Add timestamp for UI update
-        });
+          timestamp: new Date().toISOString(),
+        };
 
-        console.log("📤 Message emitted to room:", messagePayload.roomId);
+        io.to(messagePayload.roomId).emit("receive_message", savedMessage);
       } catch (error) {
-        console.error("❌ Error saving message to Firestore:", error);
+        console.error("Error saving message to Firestore:", error);
       }
     });
 

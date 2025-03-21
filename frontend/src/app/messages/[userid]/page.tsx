@@ -5,11 +5,17 @@ import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 
+interface Message {
+  id: string;
+  from: string;
+  message: string;
+  timestamp?: string;
+}
+
 export default function UserMessages() {
   const { data: session } = useSession();
   const socketRef = useRef<Socket | null>(null);
-  const [messages, setMessages] = useState<{ from: string; message: string }[]>([]);
-
+  const [messages, setMessages] = useState<Message[]>([]);
   const params = useParams();
   const recipientId = params?.userid as string;
 
@@ -21,14 +27,23 @@ export default function UserMessages() {
   const roomId = [loggedInUserId, recipientId].sort().join("-");
 
   useEffect(() => {
-     if (!socketRef.current) {
-    socketRef.current = io("https://holy-stacee-hscode524-5fbd0f72.koyeb.app/", {
-      transports: ["polling", "websocket"],
-      withCredentials: true,
-    });
-  }
+    if (!socketRef.current) {
+      socketRef.current = io("https://holy-stacee-hscode524-5fbd0f72.koyeb.app/", {
+        transports: ["polling", "websocket"],
+        withCredentials: true,
+      });
+    }
 
     socketRef.current.emit("join_room", roomId);
+
+    socketRef.current.on("load_previous_messages", (prevMessages: Message[]) => {
+      const sortedMessages = prevMessages.sort(
+        (a, b) =>
+          new Date(a.timestamp || "").getTime() - new Date(b.timestamp || "").getTime()
+      );
+
+      setMessages(sortedMessages);
+    });
 
     return () => {
       socketRef.current?.disconnect();
@@ -38,7 +53,7 @@ export default function UserMessages() {
   useEffect(() => {
     if (!socketRef.current) return;
 
-    const handleMessage = (data: { from: string; message: string }) => {
+    const handleMessage = (data: Message) => {
       setMessages((prev) => [...prev, data]);
     };
 
@@ -55,7 +70,7 @@ export default function UserMessages() {
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((msg, index) => (
           <div
-            key={index}
+            key={msg.id || index}
             className={`p-3 rounded-lg max-w-xs ${
               msg.from === loggedInUserId
                 ? "bg-blue-500 text-white self-end ml-auto"
