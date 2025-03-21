@@ -44,13 +44,13 @@ socket.on("send_message", async (data) => {
   console.error("📨 Received message data:", JSON.stringify(data, null, 2)); // Force logs
 
   try {
-    const messageData: any = {
-      from: data.from,
-      to: data.to || "unknown",
-      message: data.message,
-      timestamp: admin.firestore.FieldValue.serverTimestamp(),
-      roomId: data.roomId,
-    };
+  const messageData: any = {
+   from: data.from || "Unknown Sender", // Prevent undefined
+   to: data.to || "unknown",
+   message: data.message || "",
+   timestamp: admin.firestore.FieldValue.serverTimestamp(),
+   roomId: data.roomId || "unknown_room",
+ }
 
     console.error("✅ Before Removing Undefined Values:", JSON.stringify(messageData, null, 2));
 
