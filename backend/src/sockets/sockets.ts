@@ -33,19 +33,15 @@ const setupSocket = (server: any) => {
     });
 
     // ✅ Sending a message
-   socket.on("send_message", async (data) => {
-  console.log("⚡ send_message event TRIGGERED! 🚀");
-  console.log("📨 Received message data:", data);
+socket.on("send_message", async (data) => {
+  console.error("⚡ send_message event TRIGGERED! 🚀"); // Use console.error for better visibility
 
   if (!data) {
     console.error("❌ No data received!");
     return;
   }
 
-  if (!data.roomId || !data.from || !data.message) {
-    console.error("❌ Missing required fields:", data);
-    return;
-  }
+  console.error("📨 Received message data:", JSON.stringify(data, null, 2)); // Force logs
 
   try {
     const messageData: any = {
@@ -56,13 +52,13 @@ const setupSocket = (server: any) => {
       roomId: data.roomId,
     };
 
-    console.log("✅ Before Removing Undefined Values:", messageData);
+    console.error("✅ Before Removing Undefined Values:", JSON.stringify(messageData, null, 2));
 
     Object.keys(messageData).forEach(
       (key) => messageData[key] === undefined && delete messageData[key]
     );
 
-    console.log("✅ Final Message Data:", messageData);
+    console.error("✅ Final Message Data:", JSON.stringify(messageData, null, 2));
 
     const docRef = await db.collection("messages").add(messageData);
     const docId = docRef.id;
@@ -70,7 +66,7 @@ const setupSocket = (server: any) => {
 
     io.to(data.roomId).emit("receive_message", { ...messageData, messageId: docId });
 
-    console.log(`✅ Message stored in Firestore with ID: ${docId}`);
+    console.error(`✅ Message stored in Firestore with ID: ${docId}`);
   } catch (error) {
     console.error("❌ Error saving message:", error);
   }
