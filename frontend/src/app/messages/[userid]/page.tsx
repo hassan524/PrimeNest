@@ -22,7 +22,7 @@ export default function UserMessages() {
 
   useEffect(() => {
      if (!socketRef.current) {
-    socketRef.current = io("https://primenest-production.up.railway.app/", {
+    socketRef.current = io("https://holy-stacee-hscode524-5fbd0f72.koyeb.app/", {
       transports: ["polling", "websocket"],
       withCredentials: true,
     });
