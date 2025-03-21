@@ -33,49 +33,48 @@ const setupSocket = (server: any) => {
     });
 
     // ✅ Sending a message
-    socket.on("send_message", async (data) => {
-      try {
-        console.log("📨 Received message data:", data);
+   socket.on("send_message", async (data) => {
+  console.log("⚡ send_message event TRIGGERED! 🚀");
+  console.log("📨 Received message data:", data);
 
-        if (!data.roomId || !data.from || !data.message) {
-          console.error("❌ Error: Missing required fields!", data);
-          return;
-        }
+  if (!data) {
+    console.error("❌ No data received!");
+    return;
+  }
 
-        // ✅ Create message object (Ensure no undefined values)
-        const messageData: any = {
-          from: data.from, 
-          to: data.to || "unknown", 
-          message: data.message,
-          timestamp: admin.firestore.FieldValue.serverTimestamp(),
-          roomId: data.roomId,
-        };
+  if (!data.roomId || !data.from || !data.message) {
+    console.error("❌ Missing required fields:", data);
+    return;
+  }
 
-        // ✅ Remove any undefined fields
-        Object.keys(messageData).forEach(
-          (key) => messageData[key] === undefined && delete messageData[key]
-        );
+  try {
+    const messageData: any = {
+      from: data.from,
+      to: data.to || "unknown",
+      message: data.message,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      roomId: data.roomId,
+    };
 
-        console.log("✅ Final message data before saving:", messageData);
+    console.log("✅ Before Removing Undefined Values:", messageData);
 
-        // ✅ Save to Firestore
-        const docRef = await db.collection("messages").add(messageData);
-        const docId = docRef.id;  // ✅ Ensure `docId` is set
+    Object.keys(messageData).forEach(
+      (key) => messageData[key] === undefined && delete messageData[key]
+    );
 
-        // ✅ Update Firestore document with its own ID
-        await docRef.update({ messageId: docId });
+    console.log("✅ Final Message Data:", messageData);
 
-        // ✅ Emit the message back to the room
-        const finalMessageData = { ...messageData, messageId: docId };
-        io.to(data.roomId).emit("receive_message", finalMessageData);
+    const docRef = await db.collection("messages").add(messageData);
+    const docId = docRef.id;
+    await docRef.update({ messageId: docId });
 
-        console.log(`✅ Message stored in Firestore with ID: ${docId}`);
+    io.to(data.roomId).emit("receive_message", { ...messageData, messageId: docId });
 
-      } catch (error) {
-        console.error("❌ Error saving message:", error);
-      }
-    });
-
+    console.log(`✅ Message stored in Firestore with ID: ${docId}`);
+  } catch (error) {
+    console.error("❌ Error saving message:", error);
+  }
+});
     // ✅ Handle user disconnection
     socket.on("disconnect", () => {
       console.log(`❌ User disconnected: ${socket.id}`);
