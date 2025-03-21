@@ -39,39 +39,46 @@ const setupSocket = (server: any) => {
       }
     });
 
-    socket.on("send_message", async (messagePayload: { from: string; roomId: string; message: string }) => {
-      console.log("Received message payload:", JSON.stringify(messagePayload, null, 2));
+   socket.on("send_message", async (messagePayload: { from: string; roomId: string; message: string }) => {
+  console.log("Received message payload:", JSON.stringify(messagePayload, null, 2));
 
-      if (!messagePayload || !messagePayload.from || !messagePayload.roomId || !messagePayload.message) {
-        console.error("Invalid message payload!");
-        return;
-      }
+  if (!messagePayload || !messagePayload.from || !messagePayload.roomId || !messagePayload.message) {
+    console.error("Invalid message payload!");
+    return;
+  }
 
-      try {
-        const roomRef = db.collection("messages").doc(messagePayload.roomId);
-        const newMessage = {
-          from: messagePayload.from,
-          message: messagePayload.message,
-          timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        };
+  try {
+    const roomRef = db.collection("messages").doc(messagePayload.roomId);
 
-        await roomRef.set(
-          {
-            messages: admin.firestore.FieldValue.arrayUnion(newMessage),
-          },
-          { merge: true }
-        );
+    // Step 1: First, get a timestamp separately
+    const timestamp = admin.firestore.Timestamp.now();
 
-        io.to(messagePayload.roomId).emit("receive_message", {
-          ...newMessage,
-          timestamp: new Date(),
-        });
+    // Step 2: Create the message object
+    const newMessage = {
+      from: messagePayload.from,
+      message: messagePayload.message,
+      timestamp: timestamp, // Add timestamp here
+    };
 
-        console.log("Message emitted to room:", messagePayload.roomId);
-      } catch (error) {
-        console.error("Error saving message to Firestore:", error);
-      }
+    // Step 3: Now, add the message to Firestore
+    await roomRef.set(
+      {
+        messages: admin.firestore.FieldValue.arrayUnion(newMessage),
+      },
+      { merge: true }
+    );
+
+    // Step 4: Emit the message back to all users in the room
+    io.to(messagePayload.roomId).emit("receive_message", {
+      ...newMessage,
+      timestamp: timestamp.toDate(), // Convert Firestore timestamp to JS Date
     });
+
+    console.log("Message emitted to room:", messagePayload.roomId);
+  } catch (error) {
+    console.error("Error saving message to Firestore:", error);
+  }
+});
 
     socket.on("disconnect", () => {
       console.log(`User disconnected: ${socket.id}`);
