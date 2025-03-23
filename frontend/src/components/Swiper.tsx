@@ -67,7 +67,7 @@ const SwiperCarousel = () => {
             >
                 {displayedProperties.map((property, index) => (
                     <SwiperSlide key={index} className="flex justify-center">
-                        <div className={`custom-sm:w-80 w-full h-64 flex items-center justify-center rounded-lg shadow-xl mx-auto 
+                        <div className={`custom-sm:w-80 w-full h-64 flex items-center justify-center rounded-lg shadow-xl mx-auto cursor-pointer 
                             ${property ? "bg-gray-200" : "bg-slate-200"}`} data-aos="fade-up" data-aos-duration="1000" onClick={() => handleproperty(property)}>
                             {property && property.images?.length > 0 ? (
                                 <img src={property.images[0]} alt="Property" className="w-full h-full object-cover rounded-lg" />

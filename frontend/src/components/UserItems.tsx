@@ -58,7 +58,12 @@ const UserItems = () => {
                         Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-20 w-full" />)
                     ) : favorites.length > 0 ? (
                         favorites.map((item, index) => (
-                            <div key={index} className="flex justify-between gap-2 rounded-md cursor">
+                            <div
+                                key={index}
+                                className="flex justify-between gap-2 rounded-md cursor"
+                                data-aos="fade-up"
+                                data-aos-duration={`${100 + index * 100}`}
+                            >
                                 <div className="flex gap-4">
                                     <img src={item.images[0]} className="w-16 h-16 object-cover rounded-md" />
                                     <div className="flex flex-col gap-2">
@@ -86,7 +91,14 @@ const UserItems = () => {
                         Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-20 w-full" />)
                     ) : userProperties.length > 0 ? (
                         userProperties.map((item, index) => (
-                            <div key={index} className="flex justify-between gap-2 rounded-md">
+                            <div
+                                key={index}
+                                className="flex justify-between gap-2 rounded-md"
+                                data-aos="fade-up"
+                                data-aos-duration={`${100 + index * 100}`} 
+                                data-aos-delay={`${index * 50}`} 
+                                data-aos-easing="ease-in-out"
+                            >
                                 <div className="flex gap-4">
                                     <img src={item.images[0]} className="w-16 h-16 object-cover rounded-md" />
                                     <div className="flex flex-col gap-2">

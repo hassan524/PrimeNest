@@ -82,7 +82,7 @@ const PropertyList = () => {
                     </div>
                 ))
                 : Properties?.map((property) => (
-                    <div key={property._id} className="w-full relative flex flex-col lg:flex-row rounded-lg sm:shadow-sm py-2 overflow-hidden gap-4">
+                    <div key={property._id} className="w-full relative flex flex-col lg:flex-row rounded-lg sm:shadow-sm py-2 overflow-hidden gap-4" data-aos="fade-up" data-aos-duration="1000">
                         <div className="flex flex-col sm:flex-row sm:gap-9 gap-4 w-full">
 
                             <div className="sm:w-80 relative w-full h-48">
