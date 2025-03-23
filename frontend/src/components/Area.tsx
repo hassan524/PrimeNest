@@ -45,14 +45,14 @@ const Area = () => {
     return (
         <div className="flex flex-col gap-[3rem] justify-center md:px-[5rem] px-[1rem] text-gray-900">
             <div className="flex flex-col gap-[2.8rem] text-gray-900 text-center">
-                <h1 className="text-5xl font-semibold leading-[2.9rem]">- What&apos;s happening in your area -</h1>
-                <p className="tracking-wide">
+                <h1 className="text-5xl font-semibold leading-[2.9rem]" data-aos="fade-up" data-aos-duration="1000">- What&apos;s happening in your area -</h1>
+                <p className="tracking-wide" data-aos="fade-up" data-aos-duration="1000">
                     If you are looking for a new home, an investment property, or exploring the area, we will help
                     you find exactly what you&apos;re looking for.
                 </p>
             </div>
 
-            <div className="flex items-center gap-[4rem] bg-[#F8FAFC] justify-center flex-wrap">
+            <div className="flex items-center gap-[4rem] bg-[#F8FAFC] justify-center flex-wrap" data-aos="fade-up" data-aos-duration="1000">
                 <div className="w-80 h-[40vh] flex flex-col gap-5 justify-center items-center">
                     <div ref={ref} className="text-5xl font-bold">
                         {inView ? <CountUp start={0} end={ForSaleProps} duration={2.5} /> : 0}

@@ -10,17 +10,17 @@ const Hero = () => {
             {/* Left Side - Text Content */}
             <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left lg:ps-[2rem] md:ps-[2rem] md:px-0 px-[0.8rem] md:gap-5 gap-[2.8rem] py-5">
 
-                <h1 className="sm:text-[3rem] text-[2.9rem] sm:leading-[3.3rem] leading-[2.9rem] lg:text-[4rem] font-bold text-gray-800">
+                <h1 className="sm:text-[3rem] text-[2.9rem] sm:leading-[3.3rem] leading-[2.9rem] lg:text-[4rem] font-bold text-gray-800" data-aos="fade-up" data-aos-duration="1000">
                     Discover Your Home&apos;s True Worth
                 </h1>
 
-                <p className="text-gray-600 text-[1.2rem] leading-[2.2rem]">
+                <p className="text-gray-600 text-[1.2rem] leading-[2.2rem]"  data-aos="fade-up" data-aos-duration="1500">
                     Unlock the hidden value of your property with our advanced real estate insights.
                     Whether you're buying, selling, or investing, we provide the tools and expertise to
                     help you make the best decision for your future.
                 </p>
 
-                <Button className='py-[1.5rem] px-[3rem] md:mt-0'>DISCOVER NOW</Button>
+                <Button className='py-[1.5rem] px-[3rem] md:mt-0' data-aos="fade-up" data-aos-duration="2000">DISCOVER NOW</Button>
                 
             </div>
 

@@ -13,17 +13,17 @@ const Navbar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { SetIsSidebarOpen, SetIsSignOpen, SetIsLoginOpen } = useContext(AppContext);
-  
+
   const [, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 640); 
+      setIsSmallScreen(window.innerWidth <= 640);
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
-    
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -41,11 +41,13 @@ const Navbar = () => {
           <span className="text-lg font-semibold">PrimeNest</span>
         </div>
 
-        <div className="lg:flex hidden gap-[3rem] opacity-[0.9] items-center text-lg">
-          <Link href="/">Home</Link>
-          <Link href="/dashboard">Dashboard</Link>
-          <Link href="/properties">Properties</Link>
-        </div>
+        {session ? (
+          <div className="lg:flex hidden gap-[3rem] opacity-[0.9] items-center text-lg">
+            <Link href="/">Home</Link>
+            <Link href="/dashboard">Dashboard</Link>
+            <Link href="/properties">Properties</Link>
+          </div>
+        ): null }
 
         <div className="flex items-center justify-end sm:gap-[1.8rem] gap-[1.3rem]">
           {session ? (

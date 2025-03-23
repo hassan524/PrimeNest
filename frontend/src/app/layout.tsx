@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from "react";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -12,12 +13,19 @@ import { Toaster } from "sonner";
 import { SessionProvider } from "next-auth/react";
 import AuthWrapper from "@/components/loading/authWrapper";
 import Head from "next/head";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
+  useEffect(() => {
+    AOS.init();
+  }, []);
+
   return (
     <html lang="en">
       <Head>
