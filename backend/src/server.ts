@@ -15,11 +15,10 @@ const server = http.createServer(app);
 
 app.use(
   cors({
-    origin: "https://prime-nest-a9x1.vercel.app", 
+    origin: "*", 
     credentials: true,
   })
 );
-
 
 app.use(express.json());
 app.use(cookieParser());
