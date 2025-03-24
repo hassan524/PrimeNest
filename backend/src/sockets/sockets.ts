@@ -6,7 +6,7 @@ const db = admin.firestore();
 const setupSocket = (server: any) => {
   const io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: "http://localhost:3000/",
       methods: ["GET", "POST"],
       credentials: true,
     },
