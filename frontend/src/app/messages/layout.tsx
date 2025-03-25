@@ -66,7 +66,7 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
           {Users?.length > 0 ? (
             Users.map((user) => (
               <div
-                key={user.id}
+                key={user._id}
                 className="flex w-full md:gap-3 gap-7 cursor-pointer"
                 onClick={() => handleNavigate(user._id, user.username)}
               >
