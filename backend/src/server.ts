@@ -15,7 +15,7 @@ const server = http.createServer(app);
 
 app.use(
   cors({
-    origin: "http://localhost:3000", 
+    origin: "https://prime-nest-a9x1.vercel.app/", 
     credentials: true,
   })
 );
