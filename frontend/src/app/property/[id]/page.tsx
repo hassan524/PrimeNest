@@ -4,11 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { apiRoute } from "../../../../utils/apiRoutes";
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import axios from "axios";
 import { Separator } from "@/components/ui/separator";
 import {
   Carousel,
@@ -18,178 +13,139 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
+import axios from "axios";
 
 const PropertyDetails = () => {
+  interface Property {
+    id: string;
+    title: string;
+    price: number;
+    location: string;
+    bedrooms: number;
+    bathrooms: number;
+    propertyType: string;
+    description: string;
+    images: string[];
+    tags: string[];
+  }
 
-    interface Property {
-        id: string;
-        title: string;
-        price: number;
-        location: string;
-        bedrooms: number;
-        bathrooms: number;
-        propertyType: string;
-        description: string;
-        images: string[];
-        tags: string[];
-      }
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const [property, setProperty] = useState<Property | null>(null);
+  const [showFullDesc, setShowFullDesc] = useState(false);
 
-    const params = useParams();
-    const searchParams = useSearchParams();
-    const [property, setProperty] = useState<Property | null>(null);
+  const propertyID = params?.id;
+  const userID = searchParams.get("userID");
 
-    const propertyID = params?.id;
-    const userID = searchParams.get("userID");
+  useEffect(() => {
+    if (!userID || !propertyID) return;
 
-    useEffect(() => {
-        console.log(propertyID || 'didnt get d')
-        if (!userID || !propertyID) return;
+    axios
+      .post(apiRoute.GetUserUniqueProp, { userID, propertyID })
+      .then((response) => {
+        setProperty(response.data.property);
+      })
+      .catch((error) => {
+        console.error("Error fetching property:", error);
+      });
+  }, [userID, propertyID]);
 
-        axios
-            .post(apiRoute.GetUserUniqueProp, { userID, propertyID })
-            .then((response) => {
-                setProperty(response.data.property);
-            })
-            .catch((error) => {
-                console.error("Error fetching property:", error);
-            });
-    }, [userID, propertyID]);
+  if (!property) {
+    return <p className="text-center text-gray-600">Loading property details...</p>;
+  }
 
-    if (!property) {
-        return <p className="text-center text-gray-600">Loading property details...</p>;
-    }
+  return (
+    <div className="min-h-screen flex sm:py-12 py-8">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 sm:gap-12 gap-7 sm:px-12 px-5">
+        {property.images?.length > 0 && (
+          <div className="relative" data-aos="fade-down" data-aos-duration="1000">
+            <Carousel className="rounded-xl">
+              <CarouselContent>
+                {property.images.map((image: string, index: number) => (
+                  <CarouselItem key={index}>
+                    <Card>
+                      <CardContent className="relative flex items-center justify-center p-0">
+                        <img
+                          src={image}
+                          alt={`Property Image ${index + 1}`}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full" />
+              <CarouselNext className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full" />
+            </Carousel>
+          </div>
+        )}
 
-    const steps = ["Pending", "Paired", "Confirmed"];
-
-    return (
-        <div className="min-h-screen bg-[#fafafb] sm:py-10">
-            <div className="max-w-[90rem] flex sm:gap-[4rem] gap-[3rem] flex-col mx-auto sm:px-6">
-                {/* Image Carousel Section */}
-                {property.images && property.images.length > 0 && (
-                    <Carousel className="w-full sm:rounded-2xl overflow-hidden">
-                        <CarouselContent>
-                            {property.images.map((image: string, index: number) => (
-                                <CarouselItem key={index}>
-                                    <Card>
-                                        <CardContent className="flex aspect-video items-center justify-center p-0">
-                                            <img
-                                                src={image}
-                                                alt={`Property Image ${index + 1}`}
-                                                className="w-full h-full object-cover rounded-lg"
-                                            />
-                                        </CardContent>
-                                    </Card>
-                                </CarouselItem>
-                            ))}
-                        </CarouselContent>
-                        <CarouselPrevious />
-                        <CarouselNext />
-                    </Carousel>
-                )}
-
-                {/* Stepper */}
-                <Box sx={{ width: "100%" }}>
-                    <Stepper
-                        activeStep={1}
-                        alternativeLabel
-                        sx={{
-                            "& .MuiStepConnector-line": {
-                                borderTopWidth: 2,
-                                borderColor: "black",
-                            },
-                            "& .MuiStepIcon-root": { fontSize: "2rem", color: "black" },
-                            "& .MuiStepLabel-label": { fontWeight: "bold", fontSize: "1rem" },
-                        }}
-                    >
-                        {steps.map((label) => (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
-                            </Step>
-                        ))}
-                    </Stepper>
-                </Box>
-
-                {/* Property Info */}
-                <div className="flex flex-col sm:gap-[3rem] gap-[2rem] sm:px-0 px-4 sm:pb-0 pb-[2.5rem]">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 md:gap-10">
-                        {/* Left Section */}
-                        <div className="flex flex-col gap-6">
-                            {/* Location */}
-                            <div className="flex gap-2 items-center text-gray-500">
-                                <i className="fa fa-map-marker-alt text-xl"></i>
-                                <p className="text-lg">{property.location}</p>
-                            </div>
-
-                            {/* Title */}
-                            <h1 className="text-[2rem] md:text-[3rem] font-semibold text-black leading-tight">
-                                {property.title}
-                            </h1>
-
-                            <div className="tracking-wider rounded-2xl md:hidden flex items-center md:items-start">
-                                <span className="text-4xl md:text-5xl font-bold text-black">
-                                    ${property.price.toLocaleString()}
-                                </span>
-                            </div>
-
-                            {/* Property Details */}
-                            <div className="flex flex-wrap gap-3 text-gray-700">
-                                {[
-                                    { label: "Bedrooms", value: property.bedrooms },
-                                    { label: "Bathrooms", value: property.bathrooms },
-                                    { label: "Type", value: property.propertyType },
-                                ].map((detail, index) => (
-                                    <div
-                                        key={index}
-                                        className="px-4 py-2 border rounded-lg text-sm font-medium flex items-center gap-2"
-                                    >
-                                        <span className="text-gray-600">{detail.label}:</span>
-                                        <span className="font-semibold">{detail.value}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Price (Right Side on Desktop, Below Title on Mobile) */}
-                        <div className="tracking-wider rounded-2xl md:flex hidden items-center md:items-start bg-white w-96 py-7 px-7">
-                            <span className="text-4xl md:text-5xl font-bold text-black">
-                                ${property.price.toLocaleString()}
-                            </span>
-                        </div>
-                    </div>
-
-                    <Separator />
-
-                    <div className="flex flex-col gap-[2rem]">
-                        <h2 className="text-3xl font-semibold">About the property</h2>
-
-                        {/* Description */}
-                        <div className="sm:pe-14 flex flex-col gap-3">
-                            <p className="text-gray-600 sm:text-lg text-md sm:leading-relaxed leading-loose">
-                                {property.description}
-                            </p>
-                        </div>
-
-                        {/* Tags */}
-                        <div className="flex flex-wrap gap-3 text-gray-700">
-                            {property.tags.map((tag: string, index: number) => (
-                                <div
-                                    key={index}
-                                    className="px-4 py-2 border rounded-lg text-sm font-medium flex items-center gap-2"
-                                >
-                                    <span className="font-semibold">{tag}</span>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Contact Button */}
-                        <Button className="px-6 py-3 text-lg rounded-lg w-52 bg-blue-800 transition duration-200 text-white shadow-md">
-                            Contact Owner
-                        </Button>
-                    </div>
-                </div>
+        <div className="flex flex-col gap-5">
+          <div>
+            <div className="sm:text-[3.5rem] text-[2rem] font-bold text-black" data-aos="fade-down" data-aos-duration="1000">
+              ${property.price.toLocaleString()}
             </div>
+            <h1 className="text-2xl sm:mt-0 mt-3 uppercase font-semibold text-black leading-tight" data-aos="fade-down" data-aos-duration="1100">
+              {property.title}
+            </h1>
+            <div className="flex mt-5 flex-wrap gap-5 text-gray-700" data-aos="fade-down" data-aos-duration="1200">
+              {[
+                { label: "Bed", value: property.bedrooms, icon: "fa-bed" },
+                { label: "Bath", value: property.bathrooms, icon: "fa-bath" },
+                { value: property.propertyType },
+              ].map((detail, index) => (
+                <div
+                  key={index}
+                  className={`rounded-lg text-sm font-medium flex items-center gap-2 ${
+                    !detail.label ? (detail.value === "For Sale" ? "text-green-600" : "text-red-600") : ""
+                  }`}
+                >
+                  {detail.icon && <i className={`fa-solid ${detail.icon}`}></i>}
+                  <span className="font-semibold">{detail.value}</span>
+                  {detail.label && <span className="text-gray-600">{detail.label}</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className="flex flex-col gap-7">
+            <h2 className="text-2xl font-semibold underline" data-aos="fade-down" data-aos-duration="1300">
+              Property Details
+            </h2>
+            <p className="text-gray-600 leading-loose sm:text-sm text-xs" data-aos="fade-down" data-aos-duration="1400">
+              <span className="hidden sm:inline">{property.description}</span>
+              <span className="sm:hidden">
+                {showFullDesc ? property.description : `${property.description.slice(0, 300)}`}
+                {property.description.length > 45 && (
+                  <button
+                    onClick={() => setShowFullDesc(!showFullDesc)}
+                    className="font-bold underline ml-2"
+                  >
+                    {showFullDesc ? "Show Less" : "..."}
+                  </button>
+                )}
+              </span>
+            </p>
+
+            <div className="flex flex-wrap gap-3" data-aos="fade-down" data-aos-duration="1500">
+              {property.tags.map((tag, index) => (
+                <div key={index} className="px-4 py-2 border capitalize rounded-lg text-sm font-medium">
+                  {tag}
+                </div>
+              ))}
+            </div>
+
+            <Button className="px-6 py-6 text-lg rounded-lg text-white shadow-md w-full md:w-52" data-aos="fade-down" data-aos-duration="1600">
+              Contact Owner
+            </Button>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default PropertyDetails;

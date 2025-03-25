@@ -22,7 +22,6 @@ const PropertyList = () => {
     useEffect(() => {
         axios.get(apiRoute.GetProperty)
             .then(res => {
-                console.log(Properties)
                 SetProperties(res.data.properties);
                 SetOriginolProperties(res.data.properties);
                 setLoading(false);
@@ -72,7 +71,7 @@ const PropertyList = () => {
         <div className="flex flex-col gap-[4rem] lg:px-0 mt-[2rem]">
             {loading
                 ? [...Array(4)].map((_, index) => (
-                    <div key={index} className="w-full h-[400px] flex flex-col lg:flex-row items-center gap-6 border rounded-md shadow-md p-6">
+                    <div key={index} className="w-full h-[420px] flex flex-col lg:flex-row items-center gap-6 border rounded-md shadow-md p-6">
                         <Skeleton className="w-full lg:w-1/2 h-64 rounded-md" />
                         <div className="w-full lg:w-1/2 space-y-4">
                             <Skeleton className="h-6 w-3/4" />
@@ -82,7 +81,7 @@ const PropertyList = () => {
                     </div>
                 ))
                 : Properties?.map((property) => (
-                    <div key={property._id} className="w-full relative flex flex-col lg:flex-row rounded-lg sm:shadow-sm py-2 overflow-hidden gap-4" data-aos="fade-up" data-aos-duration="1000">
+                    <div key={property._id} className="w-full relative flex flex-col lg:flex-row rounded-lg sm:shadow-sm py-4 overflow-hidden gap-4" data-aos="fade-up" data-aos-duration="1000">
                         <div className="flex flex-col sm:flex-row sm:gap-9 gap-4 w-full">
 
                             <div className="sm:w-80 relative w-full h-48">
@@ -96,7 +95,6 @@ const PropertyList = () => {
                                         className={favorites.includes(property._id.toString()) ? "text-red-500 fill-red-500" : "text-white"}
                                         size={24}
                                     />
-
                                 </button>
                             </div>
 
@@ -108,8 +106,8 @@ const PropertyList = () => {
                                     </div>
                                     <h2 className="sm:text-3xl sm:hidden block text-2xl text-gray-800">${property.price.toLocaleString()}</h2>
                                 </div>
-                                <p className="capitalize sm:leading-loose leading-relaxed text-gray-500 tracking-wider break-words text-wrap">
-                                    {property.description.length > 100 ? `${property.description.slice(0, 100)}...` : property.description}
+                                <p className="capitalize sm:leading-loose leading-relaxed text-gray-500 tracking-wider break-words text-wrap sm:max-w-[600px]">
+                                    {property.description.length > 150 ? `${property.description.slice(0, 150)}...` : property.description}
                                 </p>
                                 <div className="flex gap-4 text-sm text-gray-600">
                                     <span className="flex items-center border px-4 py-1 gap-2">

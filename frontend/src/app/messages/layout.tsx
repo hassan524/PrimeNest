@@ -1,25 +1,23 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useParams, useSearchParams } from "next/navigation";
 import { useAppContext } from "@/context/context";
 import { useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 import io, { Socket } from "socket.io-client";
+import { Skeleton } from "@/components/ui/skeleton"; // ShadCN Skeleton
 
 export default function MessagesLayout({ children }: { children: React.ReactNode }) {
-
   const pathname = usePathname();
+  const { userid } = useParams(); // Get userid from URL params
+  const searchParams = useSearchParams();
+  const chatUsername = searchParams.get("username"); // Get username from query params
   const isChatOpen = pathname !== "/messages";
   const { Users } = useAppContext();
   const socketRef = useRef<Socket | null>(null);
   const [Message, SetMessage] = useState("");
   const { data: session } = useSession();
   const router = useRouter();
-  console.log(session)
-  
-  const pathParts = pathname.split("/");
-  const userid = pathParts.length > 2 ? pathParts[2] : null;
-  const recipientId = pathname.startsWith("/messages/") ? pathParts[2] : null;
 
   if (!socketRef.current) {
     socketRef.current = io("https://holy-stacee-hscode524-5fbd0f72.koyeb.app/", {
@@ -28,26 +26,23 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
     });
   }
 
-  const handleNavigate = (id: string) => {
-    router.push(`/messages/${id}`);
+  const handleNavigate = (id: string, username: string) => {
+    router.push(`/messages/${id}?username=${encodeURIComponent(username)}`);
   };
 
   const sendMessage = () => {
-    if (!recipientId || Message.trim() === "") return;
-  
+    if (!userid || Message.trim() === "") return;
     const fromId = session?.user?.id;
-    const toId = recipientId;
+    const toId = userid;
     const chatRoomId = [fromId, toId].sort().join("-");
-  
+
     const messageData = {
-      from: fromId,  
-      to: toId,      
-      roomId: chatRoomId,  
-      message: Message,    
+      from: fromId,
+      to: toId,
+      roomId: chatRoomId,
+      message: Message,
     };
-  
-    console.log("Sending message:", messageData); 
-  
+
     socketRef.current?.emit("send_message", messageData);
     SetMessage("");
   };
@@ -68,23 +63,41 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
         </div>
 
         <div className="flex flex-col gap-[2rem] px-4">
-          {Users?.map((user) => (
-            <div
-              key={user._id}
-              className="flex w-full md:gap-3 gap-7 cursor-pointer"
-              onClick={() => handleNavigate(user._id)}
-            >
-              <div className="h-8 w-8 bg-slate-200 rounded-full"></div>
-              <span className="text-gray-900">{user.username}</span>
-            </div>
-          ))}
+          {Users?.length > 0 ? (
+            Users.map((user) => (
+              <div
+                key={user.id}
+                className="flex w-full md:gap-3 gap-7 cursor-pointer"
+                onClick={() => handleNavigate(user._id, user.username)}
+              >
+                <div className="h-8 w-8 rounded-full bg-slate-50"></div>
+                <span className="text-gray-900">{user.username}</span>
+              </div>
+            ))
+          ) : (
+            Array.from({ length: 5 }).map((_, index) => (
+              <div key={index} className="flex items-center sm:gap-4 gap-2">
+                <Skeleton className="h-8 mx-auto w-8 rounded-full" />
+                <Skeleton className="h-6 mx-auto w-56 rounded-md" />
+              </div>
+            ))
+          )}
         </div>
       </aside>
 
       <main className={`flex-1 bg-gray-100 flex flex-col h-screen ${isChatOpen ? "flex" : "hidden md:flex"}`}>
         <header className="h-[10vh] bg-white flex items-center px-6 shadow-sm">
-          <div className="w-10 h-10 rounded-full bg-slate-50"></div>
-          <h2 className="ml-4">{userid ? `Chat with ${userid}` : "Select a user"}</h2>
+          {userid ? (
+            <>
+              <div className="w-10 h-10 rounded-full bg-slate-50"></div>
+              <h2 className="ml-4">{chatUsername || "Unknown"}</h2>
+            </>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Skeleton className="w-10 h-10 rounded-full" />
+              <Skeleton className="h-5 w-32 rounded-md" />
+            </div>
+          )}
         </header>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-4">{children}</div>

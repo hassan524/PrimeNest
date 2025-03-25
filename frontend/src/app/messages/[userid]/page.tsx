@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 
 interface Message {
-  id: string;
+  id?: string; // Optional because some messages might not have it
   from: string;
   message: string;
   timestamp?: string;
@@ -41,7 +41,6 @@ export default function UserMessages() {
         (a, b) =>
           new Date(a.timestamp || "").getTime() - new Date(b.timestamp || "").getTime()
       );
-
       setMessages(sortedMessages);
     });
 
@@ -54,6 +53,7 @@ export default function UserMessages() {
     if (!socketRef.current) return;
 
     const handleMessage = (data: Message) => {
+      console.log("Received new message:", data);
       setMessages((prev) => [...prev, data]);
     };
 
@@ -64,13 +64,15 @@ export default function UserMessages() {
     };
   }, []);
 
+  console.log("Messages state:", messages); // Debugging log
+
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       {/* Messages Display */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((msg, index) => (
           <div
-            key={msg.id || index}
+            key={msg.id || `${msg.from}-${index}`} // Ensure unique key
             className={`p-3 rounded-lg max-w-xs ${
               msg.from === loggedInUserId
                 ? "bg-blue-500 text-white self-end ml-auto"
