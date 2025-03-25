@@ -73,7 +73,7 @@ export default function UserMessages() {
     {messages.map((msg, index) => (
       <div
         key={msg.id || `${msg.from}-${index}`} 
-        className={`p-3 rounded-lg sm:max-w-[40px] max-w-[30px] whitespace-normal ${
+        className={`p-3 rounded-lg sm:max-w-[40px] max-w-[30px] ${
           msg.from === loggedInUserId
             ? "bg-blue-500 text-white self-end ml-auto"
             : "bg-gray-200 text-black self-start"
