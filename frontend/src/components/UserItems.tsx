@@ -62,7 +62,7 @@ const UserItems = () => {
                                 key={index}
                                 className="flex justify-between gap-2 rounded-md cursor"
                                 data-aos="fade-up"
-                                data-aos-duration={`${100 + index * 100}`}
+                                data-aos-duration="1000"
                             >
                                 <div className="flex gap-4">
                                     <img src={item.images[0]} className="w-16 h-16 object-cover rounded-md" />
@@ -95,9 +95,7 @@ const UserItems = () => {
                                 key={index}
                                 className="flex justify-between gap-2 rounded-md"
                                 data-aos="fade-up"
-                                data-aos-duration={`${100 + index * 100}`} 
-                                data-aos-delay={`${index * 50}`} 
-                                data-aos-easing="ease-in-out"
+                                data-aos-duration="1000"
                             >
                                 <div className="flex gap-4">
                                     <img src={item.images[0]} className="w-16 h-16 object-cover rounded-md" />

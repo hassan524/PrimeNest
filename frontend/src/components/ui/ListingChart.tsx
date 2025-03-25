@@ -21,12 +21,12 @@ const chartData = [
 ]
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  ForSale: {
+    label: "ForSale",
     color: "#2563eb",
   },
-  mobile: {
-    label: "Mobile",
+  ForRent: {
+    label: "ForRent",
     color: "#60a5fa",
   },
 } satisfies ChartConfig
@@ -45,8 +45,8 @@ export function ListingsTrendChart() {
         />
         <ChartTooltip content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+        <Bar dataKey="ForSale" fill="var(--color-desktop)" radius={4} />
+        <Bar dataKey="ForRent" fill="var(--color-mobile)" radius={4} />
       </BarChart>
     </ChartContainer>
   )
