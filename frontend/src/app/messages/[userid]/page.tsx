@@ -67,22 +67,23 @@ export default function UserMessages() {
   console.log("Messages state:", messages);
 
   return (
-       <div className="flex flex-col h-screen bg-gray-100">
-      {/* Messages Display */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {messages.map((msg, index) => (
-          <div
-            key={msg.id || `${msg.from}-${index}`} 
-            className={`p-3 rounded-lg max-w-[40px] ${
-              msg.from === loggedInUserId
-                ? "bg-blue-500 text-white self-end ml-auto"
-                : "bg-gray-200 text-black self-start"
-            }`}
-          >
-            {msg.message}
-          </div>
-        ))}
+   <div className="flex flex-col h-screen bg-gray-100">
+  {/* Messages Display */}
+  <div className="flex-1 overflow-y-auto p-4 space-y-3">
+    {messages.map((msg, index) => (
+      <div
+        key={msg.id || `${msg.from}-${index}`} 
+        className={`p-3 rounded-lg sm:max-w-[40px] max-w-[30px] break-words ${
+          msg.from === loggedInUserId
+            ? "bg-blue-500 text-white self-end ml-auto"
+            : "bg-gray-200 text-black self-start"
+        }`}
+      >
+        {msg.message}
       </div>
-    </div>
+    ))}
+  </div>
+</div>
+
   );
 }
