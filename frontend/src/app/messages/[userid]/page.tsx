@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 
 interface Message {
-  id?: string; // Optional because some messages might not have it
+  id?: string;
   from: string;
   message: string;
   timestamp?: string;
@@ -64,20 +64,19 @@ export default function UserMessages() {
     };
   }, []);
 
-  console.log("Messages state:", messages); // Debugging log
+  console.log("Messages state:", messages);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col h-screen bg-gray-100 p-4">
       {/* Messages Display */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div className="flex-1 overflow-y-auto space-y-3">
         {messages.map((msg, index) => (
           <div
-            key={msg.id || `${msg.from}-${index}`} // Ensure unique key
-            className={`p-3 rounded-lg max-w-xs ${
-              msg.from === loggedInUserId
-                ? "bg-blue-500 text-white self-end ml-auto"
-                : "bg-gray-200 text-black self-start"
-            }`}
+            key={msg.id || `${msg.from}-${index}`}
+            className={`p-3 rounded-2xl max-w-[75%] break-words ${msg.from === loggedInUserId
+                ? "bg-blue-500 text-white self-end" // Sent messages (Right)
+                : "bg-gray-200 text-black self-start" // Received messages (Left)
+              }`}
           >
             {msg.message}
           </div>
