@@ -71,15 +71,15 @@ export default function UserMessages() {
     <div className="flex flex-col h-full bg-gray-100">
       {/* Messages Display */}
       <div
-        className="w-full h-full overflow-y-auto sm:p-4 p-3 space-y-3 no-scrollbar"
+        className="w-full h-full overflow-y-auto sm:p-4 p-2 space-y-3 no-scrollbar"
         style={{ scrollbarWidth: "none" }}
       >
         {messages.map((msg, index) => (
           <div
             key={msg.id || `${msg.from}-${index}`}
-            className={`p-3 rounded-lg w-[80%] break-words ${
+            className={`p-2 rounded-lg w-[80%] break-words ${
               msg.from === loggedInUserId
-                ? "bg-blue-500 text-white self-end ml-auto"
+                ? "bg-blue-300 text-white self-end ml-auto"
                 : "bg-gray-200 text-black self-start"
             }`}
           >

@@ -114,7 +114,7 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
         </div>
 
         {/* Footer Input */}
-        <footer className="h-[10vh] fixed bottom-0 bg-white flex items-center px-4 border-t">
+        <footer className="h-[10vh] md:w-[calc(100vw - 16rem)] w-full fixed bottom-0 bg-white flex items-center px-4 border-t">
           <div className="flex items-center w-full bg-gray-100 rounded-full px-4 py-2">
             <input
               type="text"
