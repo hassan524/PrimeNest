@@ -19,6 +19,7 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
   const { data: session } = useSession();
   const router = useRouter();
 
+  // Initialize socket if not already connected
   if (!socketRef.current) {
     socketRef.current = io("https://holy-stacee-hscode524-5fbd0f72.koyeb.app/", {
       transports: ["polling", "websocket"],
@@ -48,49 +49,53 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
   };
 
   return (
-    <div className="flex text-gray-900">
-      <aside className={`bg-white md:h-auto h-[100vh] shadow-md flex flex-col gap-[2.5rem] w-full md:w-64 
-        ${isChatOpen ? "hidden md:flex" : "flex"}`}>
-        <div className="flex flex-col md:mt-[2rem] mt-[2.2rem] gap-[2rem] px-4 py-2">
-          <div className="flex items-center gap-4 w-full px-3 py-2 border-b">
+    <div className="flex h-screen text-gray-900">
+      {/* Sidebar */}
+      <aside
+        className={`bg-white shadow-md flex flex-col gap-8 p-4 w-full md:w-64 
+          ${isChatOpen ? "hidden md:flex" : "flex"}`}
+      >
+        <div className="flex flex-col gap-6">
+          <div className="flex items-center gap-3 border-b pb-2">
             <i className="bi bi-search text-gray-500"></i>
             <input
               type="text"
               placeholder="Search users..."
-              className="w-full flex-1 bg-transparent outline-none text-sm text-gray-400 tracking-wide"
+              className="w-full bg-transparent outline-none text-sm text-gray-400"
             />
           </div>
-        </div>
-
-        <div className="flex flex-col gap-[2rem] px-4">
-          {Users?.length > 0 ? (
-            Users.map((user) => (
-              <div
-                key={user._id}
-                className="flex w-full md:gap-3 gap-7 cursor-pointer"
-                onClick={() => handleNavigate(user._id, user.username)}
-              >
-                <div className="h-8 w-8 rounded-full bg-slate-50"></div>
-                <span className="text-gray-900">{user.username}</span>
-              </div>
-            ))
-          ) : (
-            Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="flex items-center sm:gap-4 gap-2">
-                <Skeleton className="h-8 mx-auto w-8 rounded-full" />
-                <Skeleton className="h-6 mx-auto w-56 rounded-md" />
-              </div>
-            ))
-          )}
+          <div className="flex flex-col gap-6">
+            {Users?.length > 0 ? (
+              Users.map((user) => (
+                <div
+                  key={user._id}
+                  className="flex items-center gap-3 cursor-pointer"
+                  onClick={() => handleNavigate(user._id, user.username)}
+                >
+                  <div className="h-8 w-8 rounded-full bg-slate-50"></div>
+                  <span className="text-gray-900">{user.username}</span>
+                </div>
+              ))
+            ) : (
+              Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="flex items-center gap-3">
+                  <Skeleton className="h-8 w-8 rounded-full" />
+                  <Skeleton className="h-6 w-32 rounded-md" />
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </aside>
 
-      <main className={`flex-1 bg-gray-100 flex flex-col h-screen ${isChatOpen ? "flex" : "hidden md:flex"}`}>
-        <header className="h-[10vh] bg-white flex items-center px-6 shadow-sm">
+      {/* Main Chat Section */}
+      <main className={`flex-1 bg-gray-100 flex flex-col relative ${isChatOpen ? "flex" : "hidden md:flex"}`}>
+        {/* Header */}
+        <header className="h-16 bg-white flex items-center px-6 shadow-sm">
           {userid ? (
             <>
               <div className="w-10 h-10 rounded-full bg-slate-50"></div>
-              <h2 className="ml-4">{chatUsername || "Unknown"}</h2>
+              <h2 className="ml-4 text-lg font-medium">{chatUsername || "Unknown"}</h2>
             </>
           ) : (
             <div className="flex items-center gap-4">
@@ -100,19 +105,30 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
           )}
         </header>
 
-        <div className="flex-1 h-[80vh] overflow-y-auto p-6 space-y-4" style={{ scrollbarWidth: "none" }}>{children}</div>
+        {/* Chat Messages */}
+        <div
+          className="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar"
+          style={{ scrollbarWidth: "none" }}
+        >
+          {children}
+        </div>
 
-        <footer className="h-[10vh] bottom-0 fixed md:w-[calc(100vw-16rem)] w-full bg-white flex items-center px-4 border-t">
+        {/* Footer Input */}
+        <footer className="h-16 bg-white flex items-center px-4 border-t">
           <div className="flex items-center w-full bg-gray-100 rounded-full px-4 py-2">
             <input
               type="text"
               placeholder="Type a message..."
-              className="w-full bg-transparent outline-none px-2 text-gray-700"
+              className="w-full bg-transparent outline-none px-2 text-gray-700 break-words"
               onChange={(e) => SetMessage(e.target.value)}
               value={Message}
               disabled={!userid}
             />
-            <button className="ml-3 text-blue-500 text-2xl" disabled={!userid} onClick={sendMessage}>
+            <button
+              className="ml-3 text-blue-500 text-2xl"
+              disabled={!userid}
+              onClick={sendMessage}
+            >
               <i className="bi bi-send-fill"></i>
             </button>
           </div>

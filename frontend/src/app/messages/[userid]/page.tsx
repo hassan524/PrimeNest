@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 
 interface Message {
-  id?: string; 
+  id?: string;
   from: string;
   message: string;
   timestamp?: string;
@@ -27,6 +27,7 @@ export default function UserMessages() {
   const roomId = [loggedInUserId, recipientId].sort().join("-");
 
   useEffect(() => {
+    // Initialize socket if not already connected
     if (!socketRef.current) {
       socketRef.current = io("https://holy-stacee-hscode524-5fbd0f72.koyeb.app/", {
         transports: ["polling", "websocket"],
@@ -34,8 +35,10 @@ export default function UserMessages() {
       });
     }
 
+    // Join the chat room
     socketRef.current.emit("join_room", roomId);
 
+    // Load previous messages
     socketRef.current.on("load_previous_messages", (prevMessages: Message[]) => {
       const sortedMessages = prevMessages.sort(
         (a, b) =>
@@ -44,6 +47,7 @@ export default function UserMessages() {
       setMessages(sortedMessages);
     });
 
+    // Cleanup on component unmount
     return () => {
       socketRef.current?.disconnect();
     };
@@ -53,7 +57,6 @@ export default function UserMessages() {
     if (!socketRef.current) return;
 
     const handleMessage = (data: Message) => {
-      console.log("Received new message:", data);
       setMessages((prev) => [...prev, data]);
     };
 
@@ -64,17 +67,17 @@ export default function UserMessages() {
     };
   }, []);
 
-  console.log("Messages state:", messages);
-
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col h-full bg-gray-100">
       {/* Messages Display */}
-      <div className="flex-1 overflow-y-auto sm:p-4 p-3 space-y-3"
-        style={{ scrollbarWidth: "none" }}>
+      <div
+        className="flex-1 overflow-y-auto sm:p-4 p-3 space-y-3 no-scrollbar"
+        style={{ scrollbarWidth: "none" }}
+      >
         {messages.map((msg, index) => (
           <div
-            key={msg.id || `${msg.from}-${index}`} 
-            className={`p-3 rounded-lg w-[80%] ${
+            key={msg.id || `${msg.from}-${index}`}
+            className={`p-3 rounded-lg w-[80%] break-words ${
               msg.from === loggedInUserId
                 ? "bg-blue-500 text-white self-end ml-auto"
                 : "bg-gray-200 text-black self-start"
@@ -85,6 +88,5 @@ export default function UserMessages() {
         ))}
       </div>
     </div>
-
   );
 }
