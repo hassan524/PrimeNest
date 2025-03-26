@@ -5,17 +5,17 @@ import { useAppContext } from "@/context/context";
 import { useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 import io, { Socket } from "socket.io-client";
-import { Skeleton } from "@/components/ui/skeleton"; // ShadCN Skeleton
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function MessagesLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { userid } = useParams(); // Get userid from URL params
+  const { userid } = useParams();
   const searchParams = useSearchParams();
-  const chatUsername = searchParams.get("username"); // Get username from query params
+  const chatUsername = searchParams.get("username");
   const isChatOpen = pathname !== "/messages";
   const { Users } = useAppContext();
   const socketRef = useRef<Socket | null>(null);
-  const [Message, SetMessage] = useState("");
+  const [Message, setMessage] = useState("");
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -45,15 +45,16 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
     };
 
     socketRef.current?.emit("send_message", messageData);
-    SetMessage("");
+    setMessage("");
   };
 
   return (
-    <div className="flex h-screen text-gray-900">
+    <div className="flex h-screen overflow-hidden text-gray-900">
       {/* Sidebar */}
       <aside
-        className={`bg-white shadow-md flex flex-col gap-8 p-4 w-full md:w-64 
-          ${isChatOpen ? "hidden md:flex" : "flex"}`}
+        className={`bg-white shadow-md flex flex-col gap-8 p-4 w-full md:w-64 ${
+          isChatOpen ? "hidden md:flex" : "flex"
+        }`}
       >
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-3 border-b pb-2">
@@ -89,9 +90,9 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
       </aside>
 
       {/* Main Chat Section */}
-      <main className={`flex-1 bg-gray-100 flex flex-col relative ${isChatOpen ? "flex" : "hidden md:flex"}`}>
+      <main className={`flex-1 bg-gray-100 flex flex-col overflow-hidden ${isChatOpen ? "flex" : "hidden md:flex"}`}>
         {/* Header */}
-        <header className="h-16 bg-white flex items-center px-6 shadow-sm">
+        <header className="h-16 bg-white flex items-center px-6 shadow-sm flex-shrink-0">
           {userid ? (
             <>
               <div className="w-10 h-10 rounded-full bg-slate-50"></div>
@@ -107,20 +108,20 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
 
         {/* Chat Messages */}
         <div
-          className="overflow-y-auto p-6 space-y-4 h-[80vh] no-scrollbar md:w-[calc(100vw - 16rem)] w-full"
+          className="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar"
           style={{ scrollbarWidth: "none" }}
         >
           {children}
         </div>
 
         {/* Footer Input */}
-        <footer className="h-[10vh] fixed bottom-0 bg-white flex items-center px-4 border-t">
+        <footer className="h-16 bg-white flex items-center px-4 border-t flex-shrink-0">
           <div className="flex items-center w-full bg-gray-100 rounded-full px-4 py-2">
             <input
               type="text"
               placeholder="Type a message..."
               className="w-full bg-transparent outline-none px-2 text-gray-700 break-words"
-              onChange={(e) => SetMessage(e.target.value)}
+              onChange={(e) => setMessage(e.target.value)}
               value={Message}
               disabled={!userid}
             />
