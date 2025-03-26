@@ -100,7 +100,7 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
           )}
         </header>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">{children}</div>
+        <div className="flex-1 h-[80vh] overflow-y-auto p-6 space-y-4" style={{ scrollbarWidth: "none" }}>{children}</div>
 
         <footer className="h-[10vh] bottom-0 fixed md:w-[calc(100vw-16rem)] w-full bg-white flex items-center px-4 border-t">
           <div className="flex items-center w-full bg-gray-100 rounded-full px-4 py-2">
