@@ -71,7 +71,7 @@ export default function UserMessages() {
     <div className="flex flex-col h-full bg-gray-100">
       {/* Messages Display */}
       <div
-        className="w-full overflow-y-auto sm:p-4 p-3 space-y-3 no-scrollbar"
+        className="w-full h-full overflow-y-auto sm:p-4 p-3 space-y-3 no-scrollbar"
         style={{ scrollbarWidth: "none" }}
       >
         {messages.map((msg, index) => (

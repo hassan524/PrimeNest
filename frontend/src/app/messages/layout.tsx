@@ -107,7 +107,7 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
 
         {/* Chat Messages */}
         <div
-          className="overflow-y-auto p-6 space-y-4 no-scrollbar md:w-[calc(100vw - 16rem)] w-full"
+          className="overflow-y-auto p-6 space-y-4 h-full no-scrollbar md:w-[calc(100vw - 16rem)] w-full"
           style={{ scrollbarWidth: "none" }}
         >
           {children}
