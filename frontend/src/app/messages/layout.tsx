@@ -107,14 +107,14 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
 
         {/* Chat Messages */}
         <div
-          className="overflow-y-auto p-6 space-y-4 h-full no-scrollbar md:w-[calc(100vw - 16rem)] w-full"
+          className="overflow-y-auto p-6 space-y-4 h-[80vh] no-scrollbar md:w-[calc(100vw - 16rem)] w-full"
           style={{ scrollbarWidth: "none" }}
         >
           {children}
         </div>
 
         {/* Footer Input */}
-        <footer className="h-16 bg-white flex items-center px-4 border-t">
+        <footer className="h-[10vh] fixed bottom-0 bg-white flex items-center px-4 border-t">
           <div className="flex items-center w-full bg-gray-100 rounded-full px-4 py-2">
             <input
               type="text"
