@@ -51,7 +51,7 @@ const FilterSection = () => {
         <span className="py-2 px-6 rounded-2xl bg-slate-100 cursor-pointer" onClick={() => router.push('/properties/ForRent')} data-aos="fade-up" data-aos-duration="1400">Rent</span>
       </div>
 
-      <div className="md:hidden flex flex-col gap-4">
+      <div className="md:!hidden !flex flex-col gap-4">
         <Swiper spaceBetween={4} slidesPerView={2.5} className="w-full pb-4">
           <SwiperSlide data-aos="fade-up" data-aos-duration="1000">
             <Select onValueChange={(value) => handleFilterChange('bedrooms', value)}>
@@ -93,7 +93,7 @@ const FilterSection = () => {
 
       <Button className="bg-gray-900 md:hidden flex w-40 text-white px-6 py-3 rounded-2xl hover:bg-gray-800 transition-all" onClick={handleSearch} data-aos="fade-up" data-aos-duration="2600">Search</Button>
 
-      <div className="hidden md:flex md:flex-wrap gap-4">
+      <div className="!hidden md:!flex md:flex-wrap gap-4">
         <Select onValueChange={(value) => handleFilterChange('bedrooms', value)}>
           <SelectTrigger className="w-48 rounded-2xl bg-transparent">
             <SelectValue placeholder="Bedrooms" />
