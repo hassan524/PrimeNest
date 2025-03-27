@@ -58,10 +58,10 @@ const SwiperCarousel = () => {
                 breakpoints={{
                     320: { slidesPerView: 1, spaceBetween: 10, centeredSlides: true },
                     640: { slidesPerView: 2, spaceBetween: 60, centeredSlides: false },
-                    826: { slidesPerView: 2.7, spaceBetween: 200, centeredSlides: false },
-                    940: { slidesPerView: 2.7, spaceBetween: 150, centeredSlides: false },
-                    1086: { slidesPerView: 3, spaceBetween: 50, centeredSlides: false },
-                    1280: { slidesPerView: 4, spaceBetween: 150, centeredSlides: false },
+                    826: { slidesPerView: 2.7, spaceBetween: 100, centeredSlides: false },
+                    940: { slidesPerView: 2.7, spaceBetween: 100, centeredSlides: false },
+                    1086: { slidesPerView: 3, spaceBetween: 0, centeredSlides: false },
+                    1280: { slidesPerView: 4, spaceBetween: 100, centeredSlides: false },
                 }}
                 className="w-full"
             >
