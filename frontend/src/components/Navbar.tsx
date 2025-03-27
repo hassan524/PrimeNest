@@ -47,7 +47,7 @@ const Navbar = () => {
             <Link href="/dashboard">Dashboard</Link>
             <Link href="/properties">Properties</Link>
           </div>
-        ): null }
+        ) : null}
 
         <div className="flex items-center justify-end sm:gap-[1.8rem] gap-[1.3rem]">
           {session ? (
@@ -60,7 +60,7 @@ const Navbar = () => {
               </button>
 
               <button
-                className="opacity-[0.9] lg:hidden flex"
+                className="opacity-[0.9] lg:!hidden flex"
                 onClick={() => SetIsSidebarOpen(true)}
               >
                 <i className="bi bi-list sm:text-[35px] text-[31px] text-gray-900"></i>
