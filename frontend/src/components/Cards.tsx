@@ -105,11 +105,7 @@ const PropertyList = () => {
                                         <p className="sm:text-2xl text-xl font-semibold capitalize tracking-wider text-black">{property.title}</p>
                                         <p className="text-gray-400 capitalize text-sm mt-2">{property.location}</p>
                                     </div>
-<<<<<<< HEAD
-                                    <h2 className="sm:text-3xl sm:!hidden block text-2xl text-gray-800">${property.price.toLocaleString()}</h2>
-=======
                                     <h2 className="sm:text-3xl sm:!hidden !block text-2xl text-gray-800">${property.price.toLocaleString()}</h2>
->>>>>>> 2ceaf4063a6f5d15226303de8fc2ab815a8fb6ae
                                 </div>
                                 <p className="capitalize sm:leading-loose leading-relaxed text-gray-500 tracking-wider break-words text-wrap sm:max-w-[600px]">
                                     {property.description.length > 150 ? `${property.description.slice(0, 150)}...` : property.description}
@@ -129,11 +125,7 @@ const PropertyList = () => {
                                     View Details
                                 </Button>
                             </div>
-<<<<<<< HEAD
-                            <div className="lg:absolute sm:block !hidden lg:right-6 lg:top-6 sm:mt-0 mt-4 text-right">
-=======
                             <div className="lg:absolute sm:!block !hidden lg:right-6 lg:top-6 sm:mt-0 mt-4 text-right">
->>>>>>> 2ceaf4063a6f5d15226303de8fc2ab815a8fb6ae
                                 <h2 className="sm:text-[2.5rem] text-2xl text-gray-800">${property.price.toLocaleString()}</h2>
                             </div>
                         </div>
