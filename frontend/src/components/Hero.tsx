@@ -4,6 +4,8 @@ import React from 'react'
 import { Button } from './ui/button'
 
 const Hero = () => {
+
+      
     return (
         <div className='h-[calc(100vh-11vh)] min-h-[calc(100vh-11vh)] flex items-center justify-between overflow-hidden'>
 

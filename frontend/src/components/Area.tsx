@@ -13,6 +13,7 @@ const Area = () => {
     const [UsersCount, SetUsersCount] = useState<number>(0);
     const { Properties, SetProperties, SetOriginolProperties, SetUsers } = useAppContext();
     
+    
     console.log(Properties);
 
     useEffect(() => {

@@ -1,6 +1,7 @@
 import FilterSection from "@/components/FilterSection";
 
 export default function PropertiesLayout({ children }: { children: React.ReactNode }) {
+
   return (
     <div className="min-h-screen lg:px-20 md:px-14 py-[1rem] px-4 flex flex-col gap-10 bg-slate-50">
       <div className="merriweather pt-16" data-aos="fade-up" data-aos-duration="1000">

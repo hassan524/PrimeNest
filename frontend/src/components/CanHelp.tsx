@@ -3,6 +3,8 @@
 import React from 'react'
 
 const CanHelp = () => {
+
+      
     return (
         <div className='flex flex-col gap-[3rem] justify-center md:px-[5rem] px-[1rem] text-gray-900'>
             <div className="flex flex-col gap-[2.8rem] text-gray-900 text-center">

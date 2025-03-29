@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import axios from "axios";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const PropertyDetails = () => {
   interface Property {
@@ -33,6 +35,11 @@ const PropertyDetails = () => {
   const searchParams = useSearchParams();
   const [property, setProperty] = useState<Property | null>(null);
   const [showFullDesc, setShowFullDesc] = useState(false);
+
+  useEffect(() => {
+    AOS.init();
+  }, []);
+
 
   const propertyID = params?.id;
   const userID = searchParams.get("userID");

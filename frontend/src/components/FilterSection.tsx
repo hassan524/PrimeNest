@@ -8,9 +8,13 @@ import { Button } from "@/components/ui/button";
 import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useAppContext } from '@/context/context';
-import AOS from 'aos';
+
 
 const FilterSection = () => {
+
+
+
+
   const { SetProperties, OriginolProperties } = useAppContext();
   const router = useRouter();
 
@@ -21,9 +25,6 @@ const FilterSection = () => {
     maxPrice: '',
   });
 
-  useEffect(() => {
-    AOS.refresh();
-  }, []);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -51,7 +52,7 @@ const FilterSection = () => {
         <span className="py-2 px-6 rounded-2xl bg-slate-100 cursor-pointer" onClick={() => router.push('/properties/ForRent')} data-aos="fade-up" data-aos-duration="1400">Rent</span>
       </div>
 
-      <div className="md:hidden flex flex-col gap-4">
+      <div className="md:!hidden flex flex-col gap-4">
         <Swiper spaceBetween={4} slidesPerView={2.5} className="w-full pb-4">
           <SwiperSlide data-aos="fade-up" data-aos-duration="1000">
             <Select onValueChange={(value) => handleFilterChange('bedrooms', value)}>

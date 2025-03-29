@@ -1,6 +1,7 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import { useEffect } from "react";
 import "swiper/css/navigation";
 import { useRef } from "react";
 import { Navigation } from "swiper/modules";
@@ -11,10 +12,13 @@ import { Property } from "@/context/context";
 import { useRouter } from "next/navigation";
 
 
+
 const SwiperCarousel = () => {
     const swiperRef = useRef<SwiperType | null>(null);
     const { Properties } = useAppContext();
     const router = useRouter();
+
+    
 
     const propertiesArray = Array.isArray(Properties) ? Properties : [];
     const displayedProperties = [...propertiesArray.slice(0, 5)];
