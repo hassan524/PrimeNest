@@ -20,8 +20,8 @@ export interface IUser {
   username: string;
   email: string;
   password: string;
-  favorites: string[]; 
-  properties: string[]; 
+  favorites: string[];
+  properties: string[];
 }
 
 interface AppContextType {
@@ -37,30 +37,38 @@ interface AppContextType {
   SetProperties: (value: Property[] | null) => void;
   OriginolProperties: Property[] | null;
   SetOriginolProperties: (value: Property[] | null) => void;
-  Users: IUser[]; // Storing an array of IUser objects
-  SetUsers: (value: IUser[]) => void;
+  Users: any[];
+  SetUsers: (value: any[]) => void;
   IsConnectionDisable: boolean;
   SetIsConnectionDisable: (value: boolean) => void;
+  IsMessagesOpen: boolean;
+  SetIsMessagesOpen: (value: boolean) => void
+  ContactSelectedUser: any,
+  SetContactSelectedUser: (value: any) => void
 }
 
 // Default Context Values
 export const AppContext = createContext<AppContextType>({
   IsLoginOpen: false,
-  SetIsLoginOpen: () => {},
+  SetIsLoginOpen: () => { },
   IsSignOpen: false,
-  SetIsSignOpen: () => {},
+  SetIsSignOpen: () => { },
   IsSideBarOpen: false,
-  SetIsSidebarOpen: () => {},
+  SetIsSidebarOpen: () => { },
   IsPropertyOpen: false,
-  SetIsPropertyOpen: () => {},
+  SetIsPropertyOpen: () => { },
   Properties: null,
-  SetProperties: () => {},
+  SetProperties: () => { },
   OriginolProperties: null,
-  SetOriginolProperties: () => {},
+  SetOriginolProperties: () => { },
   Users: [],
-  SetUsers: () => {},
+  SetUsers: () => { },
   IsConnectionDisable: false,
-  SetIsConnectionDisable: () => {},
+  SetIsConnectionDisable: () => { },
+  IsMessagesOpen: false,
+  SetIsMessagesOpen: () => { },
+  ContactSelectedUser: '',
+  SetContactSelectedUser: () => { }
 });
 
 interface AppProviderProps {
@@ -73,10 +81,13 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   const [IsSideBarOpen, SetIsSidebarOpen] = useState(false);
   const [IsPropertyOpen, SetIsPropertyOpen] = useState(false);
   const [IsConnectionDisable, SetIsConnectionDisable] = useState(false);
-  
+
   const [Properties, SetProperties] = useState<Property[] | null>(null);
   const [OriginolProperties, SetOriginolProperties] = useState<Property[] | null>(null);
-  const [Users, SetUsers] = useState<IUser[]>([]); // Fixed type here
+  const [Users, SetUsers] = useState<any[]>([]);
+  const [IsMessagesOpen, SetIsMessagesOpen] = useState(false);
+  const [ContactSelectedUser, SetContactSelectedUser] = useState()
+
 
   return (
     <AppContext.Provider
@@ -97,6 +108,10 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         SetUsers,
         IsConnectionDisable,
         SetIsConnectionDisable,
+        IsMessagesOpen,
+        SetIsMessagesOpen, 
+        ContactSelectedUser,
+        SetContactSelectedUser
       }}
     >
       {children}

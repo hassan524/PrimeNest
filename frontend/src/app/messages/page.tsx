@@ -1,8 +1,16 @@
+'use client';
+
+import MessagesLayout from "@/components/MessagesLayout";
+import ChatWindow from "@/components/ChatWindow";
+import { useSearchParams } from "next/navigation";
+
 export default function MessagesPage() {
-    return (
-      <div className="flex items-center justify-center h-full text-gray-500">
-        <p>Select a conversation to start chatting</p>
-      </div>
-    );
-  }
-  
+  const searchParams = useSearchParams();
+  const selectedUserId = searchParams.get("user");
+
+  return (
+    <MessagesLayout>
+      {selectedUserId && <ChatWindow userId={selectedUserId} />}
+    </MessagesLayout>
+  );
+}

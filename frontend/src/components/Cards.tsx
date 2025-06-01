@@ -69,7 +69,7 @@ const PropertyList = () => {
     };
 
     return (
-        <div className="flex flex-col gap-[4rem] lg:px-0 mt-[2rem]">
+        <div className="flex flex-col gap-[4rem] lg:px-0 mt-[2rem] scrollbar-none">
             {loading
                 ? [...Array(4)].map((_, index) => (
                     <div key={index} className="w-full h-[420px] flex flex-col lg:flex-row items-center gap-6 border rounded-md shadow-md p-6">
@@ -101,8 +101,8 @@ const PropertyList = () => {
 
                             <div className="w-full flex flex-col gap-6">
                                 <div className="flex justify-between items-start gap-3">
-                                    <div className="flex flex-col">
-                                        <p className="sm:text-2xl text-xl font-semibold capitalize tracking-wider text-black">{property.title}</p>
+                                    <div className="flex flex-col sm:w-[75%]">
+                                        <p className="sm:text-2xl text-xl break-words font-semibold capitalize tracking-wider text-black">{property.title}</p>
                                         <p className="text-gray-400 capitalize text-sm mt-2">{property.location}</p>
                                     </div>
                                     <h2 className="sm:text-3xl sm:!hidden !block text-2xl text-gray-800">${property.price.toLocaleString()}</h2>

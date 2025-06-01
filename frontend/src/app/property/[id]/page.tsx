@@ -16,8 +16,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import axios from "axios";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { useAppContext } from "@/context/context";
 
 const PropertyDetails = () => {
+  const { SetContactSelectedUser, SetIsMessagesOpen } = useAppContext()
   interface Property {
     id: string;
     title: string;
@@ -35,14 +37,14 @@ const PropertyDetails = () => {
   const searchParams = useSearchParams();
   const [property, setProperty] = useState<Property | null>(null);
   const [showFullDesc, setShowFullDesc] = useState(false);
+  const [user, setuser] = useState()
+
+  const propertyID = params?.id;
+  const userID = searchParams.get("userID");
 
   useEffect(() => {
     AOS.init();
   }, []);
-
-
-  const propertyID = params?.id;
-  const userID = searchParams.get("userID");
 
   useEffect(() => {
     if (!userID || !propertyID) return;
@@ -51,6 +53,7 @@ const PropertyDetails = () => {
       .post(apiRoute.GetUserUniqueProp, { userID, propertyID })
       .then((response) => {
         setProperty(response.data.property);
+        setuser(response.data.user)
       })
       .catch((error) => {
         console.error("Error fetching property:", error);
@@ -90,13 +93,26 @@ const PropertyDetails = () => {
 
         <div className="flex flex-col gap-5">
           <div>
-            <div className="sm:text-[3.5rem] text-[2rem] font-bold text-black" data-aos="fade-down" data-aos-duration="1000">
+            <div
+              className="sm:text-[3.5rem] text-[2rem] font-bold text-black"
+              data-aos="fade-down"
+              data-aos-duration="1000"
+            >
               ${property.price.toLocaleString()}
             </div>
-            <h1 className="text-2xl sm:mt-0 mt-3 uppercase font-semibold text-black leading-tight" data-aos="fade-down" data-aos-duration="1100">
+            <h1
+              className="text-2xl sm:mt-0 mt-3 uppercase font-semibold text-black leading-tight"
+              data-aos="fade-down"
+              data-aos-duration="1100"
+            >
               {property.title}
             </h1>
-            <div className="flex mt-5 flex-wrap gap-5 text-gray-700" data-aos="fade-down" data-aos-duration="1200">
+
+            <div
+              className="flex mt-5 flex-wrap gap-5 text-gray-700"
+              data-aos="fade-down"
+              data-aos-duration="1200"
+            >
               {[
                 { label: "Bed", value: property.bedrooms, icon: "fa-bed" },
                 { label: "Bath", value: property.bathrooms, icon: "fa-bath" },
@@ -104,9 +120,12 @@ const PropertyDetails = () => {
               ].map((detail, index) => (
                 <div
                   key={index}
-                  className={`rounded-lg text-sm font-medium flex items-center gap-2 ${
-                    !detail.label ? (detail.value === "For Sale" ? "text-green-600" : "text-red-600") : ""
-                  }`}
+                  className={`rounded-lg text-sm font-medium flex items-center gap-2 ${!detail.label
+                    ? detail.value === "For Sale"
+                      ? "text-green-600"
+                      : "text-red-600"
+                    : ""
+                    }`}
                 >
                   {detail.icon && <i className={`fa-solid ${detail.icon}`}></i>}
                   <span className="font-semibold">{detail.value}</span>
@@ -119,33 +138,62 @@ const PropertyDetails = () => {
           <Separator />
 
           <div className="flex flex-col gap-7">
-            <h2 className="text-2xl font-semibold underline" data-aos="fade-down" data-aos-duration="1300">
+            <h2
+              className="text-2xl font-semibold underline"
+              data-aos="fade-down"
+              data-aos-duration="1300"
+            >
               Property Details
             </h2>
-            <p className="text-gray-600 leading-loose sm:text-sm text-xs" data-aos="fade-down" data-aos-duration="1400">
-              <span className="hidden sm:inline">{property.description}</span>
-              <span className="sm:hidden">
-                {showFullDesc ? property.description : `${property.description.slice(0, 300)}`}
-                {property.description.length > 45 && (
+
+            <p
+              className="text-gray-600 leading-loose sm:text-sm text-xs"
+              data-aos="fade-down"
+              data-aos-duration="1400"
+            >
+              {property.description.length > 300 ? (
+                <>
+                  {showFullDesc
+                    ? property.description
+                    : `${property.description.slice(0, 300)}... `}
                   <button
                     onClick={() => setShowFullDesc(!showFullDesc)}
-                    className="font-bold underline ml-2"
+                    className="ml-2 text-blue-600 font-semibold underline"
                   >
-                    {showFullDesc ? "Show Less" : "..."}
+                    {showFullDesc ? "Show Less" : "Read More"}
                   </button>
-                )}
-              </span>
+                </>
+              ) : (
+                property.description
+              )}
             </p>
 
-            <div className="flex flex-wrap gap-3" data-aos="fade-down" data-aos-duration="1500">
+            <div
+              className="flex flex-wrap gap-3"
+              data-aos="fade-down"
+              data-aos-duration="1500"
+            >
               {property.tags.map((tag, index) => (
-                <div key={index} className="px-4 py-2 border capitalize rounded-lg text-sm font-medium">
+                <div
+                  key={index}
+                  className="px-4 py-2 border capitalize rounded-lg text-sm font-medium"
+                >
                   {tag}
                 </div>
               ))}
             </div>
 
-            <Button className="px-6 py-6 text-lg rounded-lg text-white shadow-md w-full md:w-52" data-aos="fade-down" data-aos-duration="1600">
+            <Button
+              className="px-6 py-6 text-lg rounded-lg text-white shadow-md w-full md:w-52"
+              data-aos="fade-down"
+              data-aos-duration="1600"
+              onClick={() => {
+                SetContactSelectedUser(user);
+                SetIsMessagesOpen(true);
+
+
+              }}
+            >
               Contact Owner
             </Button>
           </div>

@@ -6,7 +6,7 @@ const db = admin.firestore();
 const setupSocket = (server: any) => {
   const io = new Server(server, {
     cors: {
-      origin: "https://prime-nest-a9x1.vercel.app",
+      origin: "http://localhost:3000",
       methods: ["GET", "POST"],
       credentials: true,
     },
@@ -30,6 +30,7 @@ const setupSocket = (server: any) => {
           // Sort messages by timestamp
           messages.sort((a, b) => (a.timestamp?.toMillis() || 0) - (b.timestamp?.toMillis() || 0));
 
+          console.log('sending previous msgs', messages)
           socket.emit("load_previous_messages", messages);
         } else {
           socket.emit("load_previous_messages", []);
@@ -39,46 +40,43 @@ const setupSocket = (server: any) => {
       }
     });
 
-   socket.on("send_message", async (messagePayload: { from: string; roomId: string; message: string }) => {
-  console.log("Received message payload:", JSON.stringify(messagePayload, null, 2));
+    socket.on("send_message", async (messagePayload: { from: string; roomId: string; message: string }) => {
+      console.log('get msg bro', messagePayload)
 
-  if (!messagePayload || !messagePayload.from || !messagePayload.roomId || !messagePayload.message) {
-    console.error("Invalid message payload!");
-    return;
-  }
+      if (!messagePayload || !messagePayload.from || !messagePayload.roomId || !messagePayload.message) {
+        console.error("Invalid message payload!");
+        return;
+      }
 
-  try {
-    const roomRef = db.collection("messages").doc(messagePayload.roomId);
+      try {
+        const roomRef = db.collection("messages").doc(messagePayload.roomId);
 
-    // Step 1: First, get a timestamp separately
-    const timestamp = admin.firestore.Timestamp.now();
+        const timestamp = admin.firestore.Timestamp.now();
 
-    // Step 2: Create the message object
-    const newMessage = {
-      from: messagePayload.from,
-      message: messagePayload.message,
-      timestamp: timestamp, // Add timestamp here
-    };
+        const newMessage = {
+          from: messagePayload.from,
+          message: messagePayload.message,
+          timestamp: timestamp,
+        };
 
-    // Step 3: Now, add the message to Firestore
-    await roomRef.set(
-      {
-        messages: admin.firestore.FieldValue.arrayUnion(newMessage),
-      },
-      { merge: true }
-    );
+        await roomRef.set(
+          {
+            messages: admin.firestore.FieldValue.arrayUnion(newMessage),
+          },
+          { merge: true }
+        );
 
-    // Step 4: Emit the message back to all users in the room
-    io.to(messagePayload.roomId).emit("receive_message", {
-      ...newMessage,
-      timestamp: timestamp.toDate(), // Convert Firestore timestamp to JS Date
+        // Step 4: Emit the message back to all users in the room
+        io.to(messagePayload.roomId).emit("receive_message", {
+          ...newMessage,
+          timestamp: timestamp.toDate(), // Convert Firestore timestamp to JS Date
+        });
+
+        console.log("Message emitted to room:", messagePayload.roomId);
+      } catch (error) {
+        console.error("Error saving message to Firestore:", error);
+      }
     });
-
-    console.log("Message emitted to room:", messagePayload.roomId);
-  } catch (error) {
-    console.error("Error saving message to Firestore:", error);
-  }
-});
 
     socket.on("disconnect", () => {
       console.log(`User disconnected: ${socket.id}`);

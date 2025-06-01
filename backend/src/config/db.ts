@@ -9,7 +9,7 @@ const contectDB = async () => {
         await mongoose.connect(uri)
         console.log('Database Established')
     } catch (error) {
-        
+        console.log('error connecting db', error)
     }
 }
 export default contectDB

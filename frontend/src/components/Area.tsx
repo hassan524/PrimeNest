@@ -17,6 +17,7 @@ const Area = () => {
     console.log(Properties);
 
     useEffect(() => {
+        console.log(apiRoute.GetInformation)
         Promise.all([
             axios.get(apiRoute.GetInformation),
             axios.get(apiRoute.GetProperty),

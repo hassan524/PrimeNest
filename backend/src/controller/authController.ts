@@ -37,9 +37,11 @@ export const UserSignUp = async (req: Request, res: Response) => {
 export const UserLogin = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
+        console.log('here email bud', email, password)
     
         const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ message: "Invalid email or password" });
+        console.log('find user', user)
     
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: "Invalid email or password" });
@@ -48,6 +50,7 @@ export const UserLogin = async (req: Request, res: Response) => {
     
         res.json({ id: user._id, name: user.username, email: user.email, token });
       } catch (err: any) {
+        console.error("Login server error:", err); // Log the full error to your terminal
         res.status(500).json({ error: err.message });
       }
 };

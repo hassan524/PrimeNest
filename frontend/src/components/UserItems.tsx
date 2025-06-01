@@ -75,7 +75,8 @@ const UserItems = () => {
                             </div>
                         ))
                     ) : (
-                        <p className="text-center">No favorite properties found.</p>
+                        // <img className="w-[300px] mx-auto" src="/no.jpg" alt="" />
+                        <div className=""></div>
                     )}
                 </div>
             </div>
@@ -110,7 +111,7 @@ const UserItems = () => {
                             </div>
                         ))
                     ) : (
-                        <p className="text-center">No favorite properties found.</p>
+                         <div className=""></div>
                     )}
                 </div>
             </div>

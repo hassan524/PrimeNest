@@ -35,6 +35,9 @@ html, body {
   font-family: 'Cormorant Garamond', serif;
 }
 
+.scrollbar-none{
+  scrollbar-width: none;
+}
 
 @layer base {
   :root {

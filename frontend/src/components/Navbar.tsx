@@ -7,12 +7,13 @@ import Dropdown from "./ui/dropdown";
 import { AppContext } from "@/context/context";
 import { useSession } from "next-auth/react";
 import { Button } from "./ui/button";
+import { useAppContext } from "@/context/context";
 
 const Navbar = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-  const { SetIsSidebarOpen, SetIsSignOpen, SetIsLoginOpen } = useContext(AppContext);
+  const { SetIsSidebarOpen, SetIsSignOpen, SetIsLoginOpen, SetIsMessagesOpen } = useContext(AppContext);
 
   const [, setIsSmallScreen] = useState(false);
 
@@ -54,7 +55,7 @@ const Navbar = () => {
             <>
               <button
                 className="opacity-[0.9]"
-                onClick={() => router.push("/messages")}
+                onClick={() => SetIsMessagesOpen(true)}
               >
                 <i className="bi bi-chat-dots sm:text-[28px] text-[24px] text-gray-900"></i>
               </button>

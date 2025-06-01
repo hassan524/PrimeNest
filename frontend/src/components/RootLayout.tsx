@@ -8,19 +8,20 @@ import "aos/dist/aos.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import LoginDialog from "@/components/Login";
 import SignupDialog from "@/components/Signup";
-import { AppProvider } from "@/context/context"; 
+import { AppProvider } from "@/context/context";
 import Sidebar from "@/components/Sidebar";
 import SellPropertyDialog from "@/components/Sell";
 import { Toaster } from "sonner";
-import { SessionProvider } from "next-auth/react"; 
+import { SessionProvider } from "next-auth/react";
 import AuthWrapper from "@/components/loading/authWrapper";
+import MessagesLayout from "./MessagesLayout";
 import Head from "next/head";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 
-    useEffect(() => {
-        AOS.init();
-      }, []);
+  useEffect(() => {
+    AOS.init();
+  }, []);
 
   return (
     <>
@@ -32,10 +33,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
         />
       </Head>
-      <SessionProvider> 
+      <SessionProvider>
         <AppProvider>
           <Navbar />
           <LoginDialog />
+          
+          <MessagesLayout>
+            {children}
+          </MessagesLayout>
+
           <SignupDialog />
           <AuthWrapper>{children}</AuthWrapper>
           <Sidebar />
