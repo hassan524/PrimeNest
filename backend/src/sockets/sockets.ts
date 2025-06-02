@@ -6,7 +6,7 @@ const db = admin.firestore();
 const setupSocket = (server: any) => {
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: "https://prime-nest-eim4.vercel.app/",
       methods: ["GET", "POST"],
       credentials: true,
     },
