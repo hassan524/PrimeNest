@@ -105,11 +105,11 @@ export default function ChatWindow({ user }: { user: any }) {
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           type="text"
           placeholder={`Message ${activeRecipient?.username || "User"}...`}
-          className="flex-1 border border-gray-300 bg-[#f8f8f8] rounded-full px-5 sm:py-2 py-5 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm"
+          className="w-[70%] border border-gray-300 bg-[#f8f8f8] rounded-full px-5 sm:py-2 py-3 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm"
         />
         <button
           onClick={sendMessage}
-          className="bg-purple-500 hover:bg-purple-600 transition text-white px-4 sm:py-2 py-5 rounded-full text-md font-medium"
+          className="bg-purple-500 flex-1 hover:bg-purple-600 transition text-white px-4 sm:py-2 py-3 rounded-full text-md font-medium"
         >
           Send
         </button>
