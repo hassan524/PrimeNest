@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5200", {
+const socket = io("https://constant-datha-hscode524-c599d95b.koyeb.app", {
   autoConnect: false, 
   withCredentials: true,
 });
