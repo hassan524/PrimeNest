@@ -63,7 +63,7 @@ const Sidebar = () => {
                 <div className="px-5 mt-auto mb-5">
                     <button
                         className="w-full bg-slate-50 py-3 rounded-lg flex items-center justify-center gap-2"
-                        onClick={() => console.log("Logout Clicked")}
+                        onClick={() => signOut({ callbackUrl: "/" })}
                     >
                         <i className="bi bi-box-arrow-right text-lg"></i> Logout
                     </button>
