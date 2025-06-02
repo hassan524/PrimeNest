@@ -87,7 +87,7 @@ export default function ChatWindow({ user }: { user: any }) {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-none px-5 py-8 space-y-4 bg-[#f4f0ee]">
+      <div className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-none px-5 py-8 space-y-4 bg-[#f4f0ee]">
         {Messages.map((msg, idx) => (
           <div key={idx} className={`flex ${msg.from === loggedInUserId ? "justify-end" : "justify-start"}`}>
             <div className={`${msg.from === loggedInUserId ? "bg-purple-200" : "bg-white"} rounded-xl p-3 shadow-sm max-w-[70%] break-words text-sm text-gray-800`}>
