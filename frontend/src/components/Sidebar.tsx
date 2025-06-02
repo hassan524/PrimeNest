@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useAppContext } from "@/context/context"; // Use your AppContext
+import { signOut } from "next-auth/react";
 
 const Sidebar = () => {
     const { IsSideBarOpen, SetIsSidebarOpen } = useAppContext();
